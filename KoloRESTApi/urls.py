@@ -22,6 +22,14 @@ from RESTApi import views
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
+router.register(r'site_users', views.SiteUserViewSet)
+router.register(r'repo_links', views.RepoLinkViewSet)
+router.register(r'articles', views.ArticleViewSet)
+router.register(r'comments', views.CommentViewSet)
+router.register(r'tags', views.TagViewSet)
+router.register(r'article_authors', views.ArticleAuthorSet)
+router.register(r'article_tags', views.ArticleTagSet)
+router.register(r'file_set', views.FileSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
