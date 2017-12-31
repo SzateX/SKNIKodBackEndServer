@@ -51,7 +51,7 @@ class TagViewSet(viewsets.ModelViewSet):
 
 class ArticleAuthorSet(viewsets.ModelViewSet):
     queryset = ArticleAuthor.objects.all()
-    serializer_class = ArticleAuthor
+    serializer_class = ArticleAuthorSerializer
 
 
 class ArticleTagSet(viewsets.ModelViewSet):
