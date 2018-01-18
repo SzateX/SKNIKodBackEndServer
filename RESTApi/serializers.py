@@ -19,7 +19,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class SiteUserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = SiteUser
-        fields = ('url', 'technologies', 'interests')
+        fields = ('url', 'technologies', 'interests', 'username', 'email', 'groups')
 
 
 class RepoLinkSerializer(serializers.HyperlinkedModelSerializer):
