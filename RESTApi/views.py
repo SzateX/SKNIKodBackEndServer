@@ -7,7 +7,7 @@ from RESTApi.serializers import UserSerializer, GroupSerializer, \
     CommentSerializer, TagSerializer, ArticleAuthorSerializer, \
     ArticleTagSerializer, FileSerializer
 
-from rest_framework import  permissions
+from rest_framework import permissions
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -22,26 +22,31 @@ class GroupViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
 
 class SiteUserViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = SiteUser.objects.all()
     serializer_class = SiteUserSerializer
 
 
 class RepoLinkViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = RepoLink.objects.all()
     serializer_class = RepoLinkSerializer
 
 
 class ArticleViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Article.objects.all().order_by('-publication_date')
     serializer_class = ArticleSerializer
 
 
 class CommentViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Comment.objects.all().order_by('-creation_date')
     serializer_class = CommentSerializer
 
@@ -54,15 +59,18 @@ class TagViewSet(viewsets.ModelViewSet):
 
 
 class ArticleAuthorSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = ArticleAuthor.objects.all()
     serializer_class = ArticleAuthorSerializer
 
 
 class ArticleTagSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = ArticleTag.objects.all()
     serializer_class = ArticleTagSerializer
 
 
 class FileSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = File.objects.all()
     serializer_class = FileSerializer
