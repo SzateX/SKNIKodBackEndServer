@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
 ]
 
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -127,5 +128,13 @@ REST_FRAMEWORK = {
 
     'DEFAULT_PERMISSION_CLASSES' : (
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ),
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     )
+}
+
+OAUTH2_PROVIDER = {
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
 }
