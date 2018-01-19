@@ -7,7 +7,6 @@ from RESTApi.serializers import UserSerializer, GroupSerializer, \
     CommentSerializer, TagSerializer, ArticleAuthorSerializer, \
     ArticleTagSerializer, FileSerializer
 
-from .permissions import HasGroupPermissions
 from rest_framework import  permissions
 
 
