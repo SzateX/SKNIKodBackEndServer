@@ -7,6 +7,9 @@ from RESTApi.serializers import UserSerializer, GroupSerializer, \
     CommentSerializer, TagSerializer, ArticleAuthorSerializer, \
     ArticleTagSerializer, FileSerializer
 
+from .permissions import HasGroupPermissions
+from rest_framework import  permissions
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -45,6 +48,8 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 
 class TagViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly, )
+
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
