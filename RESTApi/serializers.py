@@ -45,7 +45,7 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
 class TagSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Tag
-        fields = ('url', 'name')
+        fields = ('url', 'id', 'name')
 
 
 class ArticleAuthorSerializer(serializers.HyperlinkedModelSerializer):
