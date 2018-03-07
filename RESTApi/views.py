@@ -1,21 +1,18 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
-from .models import SiteUser, RepoLink, Article, Comment, Tag, ArticleAuthor, \
+from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
     ArticleTag, File
 from RESTApi.serializers import UserSerializer, GroupSerializer, \
-    SiteUserSerializer, RepoLinkSerializer, ArticleSerializer, \
+    ProfileSerializer, RepoLinkSerializer, ArticleSerializer, \
     CommentSerializer, TagSerializer, ArticleAuthorSerializer, \
     ArticleTagSerializer, FileSerializer
 
 from rest_framework import permissions
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
+"""class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
+    serializer_class = UserSerializer"""
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -27,10 +24,10 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 
-class SiteUserViewSet(viewsets.ModelViewSet):
+class ProfileViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = SiteUser.objects.all()
-    serializer_class = SiteUserSerializer
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
 
 
 class RepoLinkViewSet(viewsets.ModelViewSet):

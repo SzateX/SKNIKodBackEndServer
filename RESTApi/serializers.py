@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import SiteUser, RepoLink, Article, Comment, Tag, ArticleAuthor, \
+from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
     ArticleTag, File
 
 
@@ -16,9 +16,9 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'name')
 
 
-class SiteUserSerializer(serializers.HyperlinkedModelSerializer):
+class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = SiteUser
+        model = Profile
         fields = ('url', 'technologies', 'interests', 'username', 'email', 'groups')
 
 

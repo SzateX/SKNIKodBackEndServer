@@ -7,7 +7,7 @@ setup(
     author="SKNI KOD",
     author_email="jaksza18@gmail.com",
     description=("REST API for SKNI KOD Website"),
-    install_requires=['django', 'djangorestframework', 'markdown', 'django-filter', 'django-oauth-toolkit',
+    install_requires=['django', 'djangorestframework', 'markdown', 'django-filter', 'django-oauth-toolkit', 'django-rest-auth', 'djangorestframework-jwt', 'django-allauth',
                       'httpie'],
     license="MiT",
     keywords="www website etc",

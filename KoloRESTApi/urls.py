@@ -16,12 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url, include
 from rest_framework import routers
+from rest_framework_jwt.views import refresh_jwt_token
 from RESTApi import views
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
+# router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
-router.register(r'site_users', views.SiteUserViewSet)
+router.register(r'site_users', views.ProfileViewSet)
 router.register(r'repo_links', views.RepoLinkViewSet)
 router.register(r'articles', views.ArticleViewSet)
 router.register(r'comments', views.CommentViewSet)
@@ -34,4 +35,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^refresh-token/', refresh_jwt_token),
 ]
