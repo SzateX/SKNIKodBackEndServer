@@ -10,9 +10,9 @@ from RESTApi.serializers import UserSerializer, GroupSerializer, \
 from rest_framework import permissions
 
 
-"""class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer"""
+    serializer_class = UserSerializer
 
 
 class GroupViewSet(viewsets.ModelViewSet):
