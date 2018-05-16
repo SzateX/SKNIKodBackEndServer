@@ -100,3 +100,9 @@ ENV/
 
 # Databse
 db.sqlite3
+
+# virtualenv with name django
+django/
+
+# Visual Studio Code settings
+.vscode/
