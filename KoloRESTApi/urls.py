@@ -23,7 +23,7 @@ from RESTApi import views
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
-router.register(r'site_users', views.ProfileViewSet)
+router.register(r'profile', views.ProfileViewSet)
 router.register(r'repo_links', views.RepoLinkViewSet)
 router.register(r'articles', views.ArticleViewSet)
 router.register(r'comments', views.CommentViewSet)

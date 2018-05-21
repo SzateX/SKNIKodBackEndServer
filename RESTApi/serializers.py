@@ -17,9 +17,11 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = Profile
-        fields = ('url', 'technologies', 'interests')
+        fields = ('url', 'technologies', 'interests', 'user')
 
 
 class RepoLinkSerializer(serializers.HyperlinkedModelSerializer):
@@ -69,22 +71,22 @@ class FileSerializer(serializers.HyperlinkedModelSerializer):
 class ArticleTypeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ArticleType
-        fields = ('name',)
+        fields = ('url', 'name')
 
 
 class HardwareRentalSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = HardwareRental
-        fields = ('rental_date', 'return_date', 'user', 'hardware_piece')
+        fields = ('url', 'rental_date', 'return_date', 'user', 'hardware_piece')
 
 
 class HardwarePieceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = HardwarePiece
-        fields = ('hardware',)
+        fields = ('url', 'hardware')
 
 
 class HardwareSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Hardware
-        fields = ('name', 'description')
+        fields = ('url', 'name', 'description')
