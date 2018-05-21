@@ -7,7 +7,20 @@ from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'groups')
+        fields = ('url', 'username', 'email', 'groups', 'profile', 'password')
+        read_only_fields = ('profile', 'groups')
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
+
+    def create(self, validated_data):
+        user = User.objects.create(
+            username=validated_data['username'],
+            email=validated_data['email']
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
