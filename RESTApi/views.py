@@ -6,7 +6,8 @@ from RESTApi.serializers import UserSerializer, GroupSerializer, \
     ProfileSerializer, RepoLinkSerializer, ArticleSerializer, \
     CommentSerializer, TagSerializer, ArticleAuthorSerializer, \
     ArticleTagSerializer, FileSerializer, ArticleTypeSerializer, \
-    HardwareRentalSerializer, HardwarePieceSerializer, HardwareSerializer
+    HardwareRentalSerializer, HardwarePieceSerializer, HardwareSerializer, \
+    UserUpdateSerializer
 
 from rest_framework import permissions
 
@@ -14,6 +15,14 @@ from rest_framework import permissions
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
+
+    def get_serializer_class(self):
+        serializer_class = self.serializer_class
+
+        if self.request.method == 'PUT':
+            serializer_class = UserUpdateSerializer
+
+        return serializer_class
 
 
 class GroupViewSet(viewsets.ModelViewSet):

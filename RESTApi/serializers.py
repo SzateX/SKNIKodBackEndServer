@@ -23,6 +23,13 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         return user
 
 
+class UserUpdateSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ('url', 'username', 'email', 'groups', 'profile')
+        read_only_fields = ('profile', 'groups', 'username')
+
+
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
