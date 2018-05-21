@@ -31,6 +31,11 @@ router.register(r'tags', views.TagViewSet)
 router.register(r'article_authors', views.ArticleAuthorSet)
 router.register(r'article_tags', views.ArticleTagSet)
 router.register(r'file_set', views.FileSet)
+router.register(r'article_types', views.ArticleTypeSet)
+router.register(r'hardware_rental', views.HardwareRentalSet)
+router.register(r'hardware_piece', views.HardwarePieceSet)
+router.register(r'hardware_set', views.HardwareSet)
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

@@ -31,16 +31,11 @@ class RepoLink(models.Model):
 
 class Article(models.Model):
     # Admin Owner
-    ArticleTypes = (
-        (1, 'Project'),
-        (2, 'Article'),
-    )
-
     title = models.CharField(max_length=100)
     text = models.TextField()
     creation_date = models.DateTimeField()
     publication_date = models.DateTimeField(null=True)
-    article_type = models.IntegerField(choices=ArticleTypes)
+    article_type = models.ForeignKey('ArticleType', on_delete=models.CASCADE)
     repository_link = models.CharField(null=True, max_length=100)
     creator = models.ForeignKey('Profile', on_delete=models.CASCADE)
 
@@ -76,3 +71,23 @@ class File(models.Model):
     creation_date = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey('Profile', on_delete=models.CASCADE)
     article = models.ForeignKey('Article', on_delete=models.CASCADE)
+
+
+class ArticleType(models.Model):
+    name = models.TextField()
+
+
+class HardwareRental(models.Model):
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE)
+    hardware_piece = models.ForeignKey('HardwarePiece', on_delete=models.CASCADE)
+    rental_date = models.DateTimeField()
+    return_date = models.DateTimeField()
+
+
+class HardwarePiece(models.Model):
+    hardware = models.ForeignKey('Hardware', on_delete=models.CASCADE)
+
+
+class Hardware(models.Model):
+    name = models.TextField()
+    description = models.TextField()

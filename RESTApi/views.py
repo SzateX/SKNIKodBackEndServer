@@ -1,11 +1,12 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
-    ArticleTag, File
+    ArticleTag, File, ArticleType, HardwareRental, HardwarePiece, Hardware
 from RESTApi.serializers import UserSerializer, GroupSerializer, \
     ProfileSerializer, RepoLinkSerializer, ArticleSerializer, \
     CommentSerializer, TagSerializer, ArticleAuthorSerializer, \
-    ArticleTagSerializer, FileSerializer
+    ArticleTagSerializer, FileSerializer, ArticleTypeSerializer, \
+    HardwareRentalSerializer, HardwarePieceSerializer, HardwareSerializer
 
 from rest_framework import permissions
 
@@ -71,3 +72,27 @@ class FileSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = File.objects.all()
     serializer_class = FileSerializer
+
+
+class ArticleTypeSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    queryset = ArticleType.objects.all()
+    serializer_class = ArticleTypeSerializer
+
+
+class HardwareRentalSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    queryset = HardwareRental.objects.all()
+    serializer_class = HardwareRentalSerializer
+
+
+class HardwarePieceSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    queryset = HardwarePiece.objects.all()
+    serializer_class = HardwarePieceSerializer
+
+
+class HardwareSet(viewsets.ModelViewSet):
+    permission_classes =  (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    queryset = Hardware.objects.all()
+    serializer_class = HardwareSerializer

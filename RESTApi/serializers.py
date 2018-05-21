@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
-    ArticleTag, File
+    ArticleTag, File, ArticleType, HardwareRental, HardwarePiece, Hardware
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -64,3 +64,27 @@ class FileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = File
         fields = ('url', 'creation_date', 'user', 'article')
+
+
+class ArticleTypeSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ArticleType
+        fields = ('name',)
+
+
+class HardwareRentalSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = HardwareRental
+        fields = ('rental_date', 'return_date', 'user', 'hardware_piece')
+
+
+class HardwarePieceSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = HardwarePiece
+        fields = ('hardware',)
+
+
+class HardwareSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Hardware
+        fields = ('name', 'description')
