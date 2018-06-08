@@ -1,13 +1,13 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
-    ArticleTag, File, ArticleType, HardwareRental, HardwarePiece, Hardware
+    ArticleTag, File, ArticleType, HardwareRental, HardwarePiece, Hardware, AboutData
 from RESTApi.serializers import UserSerializer, GroupSerializer, \
     ProfileSerializer, RepoLinkSerializer, ArticleSerializer, \
     CommentSerializer, TagSerializer, ArticleAuthorSerializer, \
     ArticleTagSerializer, FileSerializer, ArticleTypeSerializer, \
     HardwareRentalSerializer, HardwarePieceSerializer, HardwareSerializer, \
-    UserUpdateSerializer
+    UserUpdateSerializer, AboutDataSerializer
 
 from rest_framework import permissions
 
@@ -105,3 +105,8 @@ class HardwareSet(viewsets.ModelViewSet):
     permission_classes =  (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Hardware.objects.all()
     serializer_class = HardwareSerializer
+
+class AboutDataSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    queryset = AboutData.objects.all()
+    serializer_class = AboutDataSerializer

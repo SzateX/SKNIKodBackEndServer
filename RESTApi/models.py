@@ -91,3 +91,9 @@ class HardwarePiece(models.Model):
 class Hardware(models.Model):
     name = models.TextField()
     description = models.TextField()
+
+
+class AboutData(models.Model):
+    title = models.CharField(max_length = 200)
+    content = models.TextField()
+    isVisible = models.BooleanField()

@@ -35,6 +35,7 @@ router.register(r'article_types', views.ArticleTypeSet)
 router.register(r'hardware_rentals', views.HardwareRentalSet)
 router.register(r'hardware_pieces', views.HardwarePieceSet)
 router.register(r'hardwares', views.HardwareSet)
+router.register(r'aboutdata', views.AboutDataSet)
 
 
 urlpatterns = [

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
-    ArticleTag, File, ArticleType, HardwareRental, HardwarePiece, Hardware
+    ArticleTag, File, ArticleType, HardwareRental, HardwarePiece, Hardware, AboutData
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -110,3 +110,9 @@ class HardwareSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Hardware
         fields = ('url', 'name', 'description')
+
+
+class AboutDataSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = AboutData
+        fields = ('url', 'title', 'content', 'isVisible')
