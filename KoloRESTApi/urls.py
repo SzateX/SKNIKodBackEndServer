@@ -18,6 +18,7 @@ from django.conf.urls import url, include
 from rest_framework import routers
 from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework_swagger.views import get_swagger_view
 from RESTApi import views
 
 router = routers.DefaultRouter()
@@ -37,6 +38,7 @@ router.register(r'hardware_pieces', views.HardwarePieceSet)
 router.register(r'hardwares', views.HardwareSet)
 router.register(r'aboutdata', views.AboutDataSet)
 
+schema_view = get_swagger_view(title='SKNI KOD Website API')
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -45,5 +47,6 @@ urlpatterns = [
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^refresh-token/', refresh_jwt_token),
-    url(r'^obtain-token/', obtain_jwt_token),    
+    url(r'^obtain-token/', obtain_jwt_token),
+    url(r'^docs$', schema_view),
 ]

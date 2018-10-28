@@ -9,7 +9,7 @@ setup(
     description=("REST API for SKNI KOD Website"),
     install_requires=['django', 'djangorestframework', 'markdown', 'django-filter', 'django-oauth-toolkit',
                       'django-rest-auth', 'djangorestframework-jwt', 'django-allauth', 'django-cors-headers',
-                      'httpie'],
+                      'httpie', 'django-rest-swagger'],
     license="MiT",
     keywords="www website etc",
     packages=find_packages(),
