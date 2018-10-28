@@ -106,3 +106,4 @@ django/
 
 # Visual Studio Code settings
 .vscode/
+RESTApi/migrations/*
