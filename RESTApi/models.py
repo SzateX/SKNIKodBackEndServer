@@ -40,7 +40,8 @@ class Comment(models.Model):
     # Admin Owner
     text = models.TextField()
     creation_date = models.DateTimeField(default=timezone.now)
-    article = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='comments')
+    article = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='comments', null=True)
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='comments', null=True)
     user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='comments')
 
 
@@ -71,7 +72,7 @@ class File(models.Model):
 class HardwareRental(models.Model):
     user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='rentals')
     rental_date = models.DateTimeField()
-    return_date = models.DateTimeField()
+    return_date = models.DateTimeField(null=True)
 
 
 class Hardware(models.Model):
@@ -87,7 +88,7 @@ class Project(models.Model):
     publication_date = models.DateTimeField(null=True)
     repository_link = models.CharField(null=True, blank=True, max_length=100)
     creator = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='projects')
-    section = models.ForeignKey('Section', on_delete=models.CASCADE, related_name='projects')
+    section = models.ForeignKey('Section', on_delete=models.CASCADE, related_name='projects', null=True)
 
 
 class ProjectAuthor(models.Model):
