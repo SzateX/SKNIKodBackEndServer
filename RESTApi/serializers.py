@@ -59,24 +59,16 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class ArticleTagSerializer(serializers.ModelSerializer):
-    class _ArticleSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Article
-            fields = (
-                'id', 'title', 'text', 'creation_date', 'publication_date',
-                'creator')
-
     tag = TagSerializer()
-    article = _ArticleSerializer()
 
     class Meta:
         model = ArticleTag
-        fields = ('id', 'tag', 'article')
+        fields = ('id', 'tag')
 
 
 class ArticleSerializer(serializers.ModelSerializer):
     creator = ProfileSerializer()
-    tags = ArticleTagSerializer()
+    tags = ArticleTagSerializer(many=True)
 
     class Meta:
         model = Article
