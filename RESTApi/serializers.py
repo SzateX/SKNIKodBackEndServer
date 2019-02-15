@@ -4,10 +4,10 @@ from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
     ArticleTag, File, ArticleType, HardwareRental, HardwarePiece, Hardware, AboutData
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'groups', 'profile', 'password')
+        fields = ('id', 'username', 'email', 'groups', 'profile', 'password')
         read_only_fields = ('profile', 'groups')
         extra_kwargs = {
             'password': {'write_only': True}
@@ -23,96 +23,118 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         return user
 
 
-class UserUpdateSerializer(serializers.HyperlinkedModelSerializer):
+class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'groups', 'profile')
+        fields = ('id', 'username', 'email', 'groups', 'profile')
         read_only_fields = ('profile', 'groups', 'username')
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = ('url', 'name')
+        fields = ('id', 'name')
 
 
-class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
 
     class Meta:
         model = Profile
-        fields = ('url', 'technologies', 'interests', 'user')
+        fields = ('id', 'technologies', 'interests', 'user')
 
 
-class RepoLinkSerializer(serializers.HyperlinkedModelSerializer):
+class RepoLinkSerializer(serializers.ModelSerializer):
+    user = ProfileSerializer()
+
     class Meta:
         model = RepoLink
-        fields = ('url', 'link', 'user')
+        fields = ('id', 'link', 'user')
 
 
-class ArticleSerializer(serializers.HyperlinkedModelSerializer):
+class ArticleTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ArticleType
+        fields = ('id', 'name')
+
+
+class ArticleSerializer(serializers.ModelSerializer):
+    article_type = ArticleTypeSerializer()
+    creator = ProfileSerializer()
+
     class Meta:
         model = Article
-        fields = ('url', 'title', 'text', 'creation_date', 'publication_date',
+        fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
                   'article_type', 'repository_link', 'creator')
 
 
-class CommentSerializer(serializers.HyperlinkedModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
+    article = ArticleSerializer()
+    user = UserSerializer()
+
     class Meta:
         model = Comment
-        fields = ('url', 'text', 'creation_date', 'parent_comment', 'article',
+        fields = ('id', 'text', 'creation_date', 'parent_comment', 'article',
                   'user')
 
 
-class TagSerializer(serializers.HyperlinkedModelSerializer):
+class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('url', 'id', 'name')
+        fields = ('id', 'id', 'name')
 
 
-class ArticleAuthorSerializer(serializers.HyperlinkedModelSerializer):
+class ArticleAuthorSerializer(serializers.ModelSerializer):
+    user = ProfileSerializer()
+    article = ArticleSerializer()
+
     class Meta:
         model = ArticleAuthor
-        fields = ('url', 'user', 'article')
+        fields = ('id', 'user', 'article')
 
 
-class ArticleTagSerializer(serializers.HyperlinkedModelSerializer):
+class ArticleTagSerializer(serializers.ModelSerializer):
+    tag = TagSerializer()
+    article = ArticleSerializer()
+
     class Meta:
         model = ArticleTag
-        fields = ('url', 'tag', 'article')
+        fields = ('id', 'tag', 'article')
 
 
-class FileSerializer(serializers.HyperlinkedModelSerializer):
+class FileSerializer(serializers.ModelSerializer):
+    user = ProfileSerializer()
+    article = ArticleSerializer()
+
     class Meta:
         model = File
-        fields = ('url', 'creation_date', 'user', 'article')
+        fields = ('id', 'creation_date', 'user', 'article')
 
 
-class ArticleTypeSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = ArticleType
-        fields = ('url', 'name')
-
-
-class HardwareRentalSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = HardwareRental
-        fields = ('url', 'rental_date', 'return_date', 'user', 'hardware_piece')
-
-
-class HardwarePieceSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = HardwarePiece
-        fields = ('url', 'hardware')
-
-
-class HardwareSerializer(serializers.HyperlinkedModelSerializer):
+class HardwareSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hardware
-        fields = ('url', 'name', 'description')
+        fields = ('id', 'name', 'description')
 
 
-class AboutDataSerializer(serializers.HyperlinkedModelSerializer):
+class HardwarePieceSerializer(serializers.ModelSerializer):
+    hardware = HardwareSerializer()
+
+    class Meta:
+        model = HardwarePiece
+        fields = ('id', 'hardware')
+
+
+class HardwareRentalSerializer(serializers.ModelSerializer):
+    user = ProfileSerializer()
+    hardware_piece = HardwareSerializer()
+
+    class Meta:
+        model = HardwareRental
+        fields = ('id', 'rental_date', 'return_date', 'user', 'hardware_piece')
+
+
+class AboutDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = AboutData
-        fields = ('url', 'title', 'content', 'isVisible')
+        fields = ('id', 'title', 'content', 'isVisible')
