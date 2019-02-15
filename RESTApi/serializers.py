@@ -52,12 +52,35 @@ class RepoLinkSerializer(serializers.ModelSerializer):
         fields = ('id', 'link', 'user')
 
 
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ('id', 'name')
+
+
+class ArticleTagSerializer(serializers.ModelSerializer):
+    class _ArticleSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Article
+            fields = (
+                'id', 'title', 'text', 'creation_date', 'publication_date',
+                'creator')
+
+    tag = TagSerializer()
+    article = _ArticleSerializer()
+
+    class Meta:
+        model = ArticleTag
+        fields = ('id', 'tag', 'article')
+
+
 class ArticleSerializer(serializers.ModelSerializer):
     creator = ProfileSerializer()
+    tags = ArticleTagSerializer()
 
     class Meta:
         model = Article
-        fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'creator')
+        fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'creator', 'tags')
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -69,12 +92,6 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ('id', 'text', 'creation_date', 'article', 'user')
 
 
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = ('id', 'name')
-
-
 class ArticleAuthorSerializer(serializers.ModelSerializer):
     user = ProfileSerializer()
     article = ArticleSerializer()
@@ -82,15 +99,6 @@ class ArticleAuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArticleAuthor
         fields = ('id', 'user', 'article')
-
-
-class ArticleTagSerializer(serializers.ModelSerializer):
-    tag = TagSerializer()
-    article = ArticleSerializer()
-
-    class Meta:
-        model = ArticleTag
-        fields = ('id', 'tag', 'article')
 
 
 class FileSerializer(serializers.ModelSerializer):
