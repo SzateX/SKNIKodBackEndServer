@@ -32,11 +32,12 @@ router.register(r'tags', views.TagViewSet)
 router.register(r'article_authors', views.ArticleAuthorSet)
 router.register(r'article_tags', views.ArticleTagSet)
 router.register(r'file_set', views.FileSet)
-router.register(r'article_types', views.ArticleTypeSet)
 router.register(r'hardware_rentals', views.HardwareRentalSet)
-router.register(r'hardware_pieces', views.HardwarePieceSet)
 router.register(r'hardwares', views.HardwareSet)
-router.register(r'aboutdata', views.AboutDataSet)
+router.register(r'project', views.ProjectSet)
+router.register(r'project_author', views.ProjectAuthorSet)
+router.register(r'section', views.SectionSet)
+
 
 schema_view = get_swagger_view(title='SKNI KOD Website API')
 

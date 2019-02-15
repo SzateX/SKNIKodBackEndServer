@@ -1,13 +1,8 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
-from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
-    ArticleTag, File, ArticleType, HardwareRental, HardwarePiece, Hardware, AboutData
-from RESTApi.serializers import UserSerializer, GroupSerializer, \
-    ProfileSerializer, RepoLinkSerializer, ArticleSerializer, \
-    CommentSerializer, TagSerializer, ArticleAuthorSerializer, \
-    ArticleTagSerializer, FileSerializer, ArticleTypeSerializer, \
-    HardwareRentalSerializer, HardwarePieceSerializer, HardwareSerializer, \
-    UserUpdateSerializer, AboutDataSerializer
+
+from .models import *
+from RESTApi.serializers import *
 
 from rest_framework import permissions
 
@@ -83,22 +78,10 @@ class FileSet(viewsets.ModelViewSet):
     serializer_class = FileSerializer
 
 
-class ArticleTypeSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = ArticleType.objects.all()
-    serializer_class = ArticleTypeSerializer
-
-
 class HardwareRentalSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = HardwareRental.objects.all()
     serializer_class = HardwareRentalSerializer
-
-
-class HardwarePieceSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = HardwarePiece.objects.all()
-    serializer_class = HardwarePieceSerializer
 
 
 class HardwareSet(viewsets.ModelViewSet):
@@ -106,7 +89,19 @@ class HardwareSet(viewsets.ModelViewSet):
     queryset = Hardware.objects.all()
     serializer_class = HardwareSerializer
 
-class AboutDataSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = AboutData.objects.all()
-    serializer_class = AboutDataSerializer
+
+class ProjectSet(viewsets.ModelViewSet):
+    permission_classes =  (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+
+
+class ProjectAuthorSet(viewsets.ModelViewSet):
+    permission_classes =  (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    queryset = ProjectAuthor.objects.all()
+    serializer_class = ProjectAuthorSerializer
+
+class SectionSet(viewsets.ModelViewSet):
+    permission_classes =  (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    queryset = Section.objects.all()
+    serializer_class = SectionSerializer

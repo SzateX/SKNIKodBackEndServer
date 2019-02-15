@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
-    ArticleTag, File, ArticleType, HardwareRental, HardwarePiece, Hardware, AboutData
+    ArticleTag, File, HardwareRental, Hardware, Project, ProjectAuthor, Section
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -41,7 +41,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('id', 'technologies', 'interests', 'user')
+        fields = ('id', 'user')
 
 
 class RepoLinkSerializer(serializers.ModelSerializer):
@@ -52,20 +52,12 @@ class RepoLinkSerializer(serializers.ModelSerializer):
         fields = ('id', 'link', 'user')
 
 
-class ArticleTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ArticleType
-        fields = ('id', 'name')
-
-
 class ArticleSerializer(serializers.ModelSerializer):
-    article_type = ArticleTypeSerializer()
     creator = ProfileSerializer()
 
     class Meta:
         model = Article
-        fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
-                  'article_type', 'repository_link', 'creator')
+        fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'creator')
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -74,14 +66,13 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'text', 'creation_date', 'parent_comment', 'article',
-                  'user')
+        fields = ('id', 'text', 'creation_date', 'article', 'user')
 
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('id', 'id', 'name')
+        fields = ('id', 'name')
 
 
 class ArticleAuthorSerializer(serializers.ModelSerializer):
@@ -117,14 +108,6 @@ class HardwareSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description')
 
 
-class HardwarePieceSerializer(serializers.ModelSerializer):
-    hardware = HardwareSerializer()
-
-    class Meta:
-        model = HardwarePiece
-        fields = ('id', 'hardware')
-
-
 class HardwareRentalSerializer(serializers.ModelSerializer):
     user = ProfileSerializer()
     hardware_piece = HardwareSerializer()
@@ -134,7 +117,25 @@ class HardwareRentalSerializer(serializers.ModelSerializer):
         fields = ('id', 'rental_date', 'return_date', 'user', 'hardware_piece')
 
 
-class AboutDataSerializer(serializers.ModelSerializer):
+class SectionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AboutData
-        fields = ('id', 'title', 'content', 'isVisible')
+        model = Section
+        fields = ('id', 'name', 'description', 'isVisible')
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    creator = ProfileSerializer()
+    section = SectionSerializer()
+
+    class Meta:
+        model = Project
+        fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'repository_link', 'creator', 'section')
+
+
+class ProjectAuthorSerializer(serializers.ModelSerializer):
+    user = ProfileSerializer()
+    project = ProjectSerializer()
+
+    class Meta:
+        model = ProjectAuthor
+        fields = ('id', 'user', 'project')

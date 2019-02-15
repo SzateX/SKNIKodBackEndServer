@@ -92,8 +92,8 @@ class Project(models.Model):
 
 
 class ProjectAuthor(models.Model):
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='authors')
-    project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='authors')
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='project_authors')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='project_authors')
 
 
 class Section(models.Model):
