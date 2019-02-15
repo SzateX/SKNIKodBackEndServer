@@ -8,8 +8,6 @@ from django.dispatch import receiver
 class Profile(models.Model):
     # Admin Owner
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    technologies = models.TextField(null=True)
-    interests = models.TextField(null=True)
 
 
 @receiver(post_save, sender=User)
@@ -26,7 +24,7 @@ def save_user_profile(sender, instance, **kwargs):
 class RepoLink(models.Model):
     # Admin Owner
     link = models.CharField(max_length=100)
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE)
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='repo_links')
 
 
 class Article(models.Model):
@@ -35,18 +33,16 @@ class Article(models.Model):
     text = models.TextField()
     creation_date = models.DateTimeField()
     publication_date = models.DateTimeField(null=True)
-    article_type = models.ForeignKey('ArticleType', on_delete=models.CASCADE)
-    repository_link = models.CharField(null=True, max_length=100)
-    creator = models.ForeignKey('Profile', on_delete=models.CASCADE)
+    creator = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='articles')
 
 
 class Comment(models.Model):
     # Admin Owner
     text = models.TextField()
     creation_date = models.DateTimeField(default=timezone.now)
-    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
-    article = models.ForeignKey('Article', on_delete=models.CASCADE)
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE)
+    article = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='comments', null=True)
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='comments', null=True)
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='comments')
 
 
 class Tag(models.Model):
@@ -56,44 +52,51 @@ class Tag(models.Model):
 
 class ArticleAuthor(models.Model):
     # Admin
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    article = models.ForeignKey('Article', on_delete=models.CASCADE)
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='authors')
+    article = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='authors')
 
 
 class ArticleTag(models.Model):
     # Admin
-    tag = models.ForeignKey('Tag', on_delete=models.CASCADE)
-    article = models.ForeignKey('Article', on_delete=models.CASCADE)
+    tag = models.ForeignKey('Tag', on_delete=models.CASCADE, related_name='tags')
+    article = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='tags')
 
 
 class File(models.Model):
     # Admin
     creation_date = models.DateTimeField(default=timezone.now)
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    article = models.ForeignKey('Article', on_delete=models.CASCADE)
-
-
-class ArticleType(models.Model):
-    name = models.TextField()
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='files')
+    article = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='files')
 
 
 class HardwareRental(models.Model):
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    hardware_piece = models.ForeignKey('HardwarePiece', on_delete=models.CASCADE)
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='rentals')
     rental_date = models.DateTimeField()
-    return_date = models.DateTimeField()
-
-
-class HardwarePiece(models.Model):
-    hardware = models.ForeignKey('Hardware', on_delete=models.CASCADE)
+    return_date = models.DateTimeField(null=True)
 
 
 class Hardware(models.Model):
     name = models.TextField()
     description = models.TextField()
+    serial_number = models.TextField()
 
 
-class AboutData(models.Model):
-    title = models.CharField(max_length = 200)
-    content = models.TextField()
+class Project(models.Model):
+    title = models.CharField(max_length=100)
+    text = models.TextField()
+    creation_date = models.DateTimeField()
+    publication_date = models.DateTimeField(null=True)
+    repository_link = models.CharField(null=True, blank=True, max_length=100)
+    creator = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='projects')
+    section = models.ForeignKey('Section', on_delete=models.CASCADE, related_name='projects', null=True)
+
+
+class ProjectAuthor(models.Model):
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='authors')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='authors')
+
+
+class Section(models.Model):
+    name = models.TextField()
+    description = models.TextField()
     isVisible = models.BooleanField()
