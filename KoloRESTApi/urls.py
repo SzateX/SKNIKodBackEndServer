@@ -16,8 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url, include
 from rest_framework import routers
-from rest_framework_jwt.views import refresh_jwt_token
-from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
 from rest_framework_swagger.views import get_swagger_view
 from RESTApi import views
 
@@ -47,7 +50,8 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
-    url(r'^refresh-token/', refresh_jwt_token),
-    url(r'^obtain-token/', obtain_jwt_token),
+    url(r'^refresh-token/', TokenRefreshView.as_view(), name='token_refresh'),
+    url(r'^obtain-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    url(r'^verify-token/', TokenVerifyView.as_view(), name='token_verify'),
     url(r'^docs$', schema_view),
 ]
