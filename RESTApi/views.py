@@ -52,9 +52,13 @@ class ArticleViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         tag_id = self.request.query_params.get('tag', None)
-        if not tag_id:
-            return Article.objects.all().order_by('-publication_date')
-        return Article.objects.filter(tags__tag=tag_id).order_by('-publication_date')
+        tag_name = self.request.query_params.get('tagname', None)
+        if tag_id is not None:
+            return Article.objects.filter(tags__tag=tag_id).order_by(
+                '-publication_date')
+        if tag_name is not None:
+            return Article.objects.filter(tags__tag__name=tag_name).order_by('-publication_date')
+        return Article.objects.all().order_by('-publication_date')
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -64,7 +68,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         article_id = self.request.query_params.get('article', None)
-        if not article_id:
+        if article_id is not None:
             return Comment.objects.all()
         return Comment.objects.filter(article=article_id)
 
