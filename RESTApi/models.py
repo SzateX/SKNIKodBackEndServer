@@ -30,6 +30,7 @@ class RepoLink(models.Model):
 class Article(models.Model):
     # Admin Owner
     title = models.CharField(max_length=100)
+    alias = models.CharField(max_length=100)
     text = models.TextField()
     creation_date = models.DateTimeField()
     publication_date = models.DateTimeField(null=True)

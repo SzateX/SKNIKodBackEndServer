@@ -84,7 +84,7 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'creator', 'tags', 'comments_number')
+        fields = ('id', 'alias', 'title', 'text', 'creation_date', 'publication_date', 'creator', 'tags', 'comments_number')
 
     def get_comments_number(self, obj):
         return obj.comments.count()
