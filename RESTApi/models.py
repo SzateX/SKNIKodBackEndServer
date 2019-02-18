@@ -71,8 +71,9 @@ class File(models.Model):
 
 class HardwareRental(models.Model):
     user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='rentals')
+    hardware = models.ForeignKey('Hardware', on_delete=models.CASCADE, related_name='rentals')
     rental_date = models.DateTimeField()
-    return_date = models.DateTimeField(null=True)
+    return_date = models.DateTimeField(null=True, blank=True)
 
 
 class Hardware(models.Model):
