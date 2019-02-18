@@ -107,9 +107,14 @@ class FileSerializer(serializers.ModelSerializer):
 
 
 class HardwareSerializer(serializers.ModelSerializer):
+    is_rented = serializers.SerializerMethodField()
+    
     class Meta:
         model = Hardware
-        fields = ('id', 'name', 'description', 'serial_number')
+        fields = ('id', 'name', 'description', 'serial_number', 'is_rented')
+
+    def get_is_rented(self, obj):
+        return obj.rentals.filter(return_date__isnull=True).exists()
 
 
 class HardwareRentalSerializer(serializers.ModelSerializer):
