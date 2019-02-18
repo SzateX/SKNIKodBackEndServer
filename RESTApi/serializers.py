@@ -109,16 +109,16 @@ class FileSerializer(serializers.ModelSerializer):
 class HardwareSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hardware
-        fields = ('id', 'name', 'description')
+        fields = ('id', 'name', 'description', 'serial_number')
 
 
 class HardwareRentalSerializer(serializers.ModelSerializer):
     user = ProfileSerializer()
-    hardware_piece = HardwareSerializer()
+    hardware = HardwareSerializer()
 
     class Meta:
         model = HardwareRental
-        fields = ('id', 'rental_date', 'return_date', 'user', 'hardware_piece')
+        fields = ('id', 'rental_date', 'return_date', 'user', 'hardware')
 
 
 class SectionSerializer(serializers.ModelSerializer):
