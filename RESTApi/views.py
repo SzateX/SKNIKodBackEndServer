@@ -1,5 +1,8 @@
+import django_filters
 from django.contrib.auth.models import User, Group
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
+from rest_framework.pagination import LimitOffsetPagination
 
 from .models import *
 from RESTApi.serializers import *
@@ -45,12 +48,25 @@ class ArticleViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Article.objects.all().order_by('-publication_date')
     serializer_class = ArticleSerializer
+    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        tag_id = self.request.query_params.get('tag', None)
+        if not tag_id:
+            return Article.objects.all().order_by('-publication_date')
+        return Article.objects.filter(tags__tag=tag_id).order_by('-publication_date')
 
 
 class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Comment.objects.all().order_by('-creation_date')
     serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        article_id = self.request.query_params.get('article', None)
+        if not article_id:
+            return Comment.objects.all()
+        return Comment.objects.filter(article=article_id)
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -85,23 +101,26 @@ class HardwareRentalSet(viewsets.ModelViewSet):
 
 
 class HardwareSet(viewsets.ModelViewSet):
-    permission_classes =  (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Hardware.objects.all()
     serializer_class = HardwareSerializer
+    pagination_class = LimitOffsetPagination
 
 
 class ProjectSet(viewsets.ModelViewSet):
-    permission_classes =  (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
 
 class ProjectAuthorSet(viewsets.ModelViewSet):
-    permission_classes =  (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = ProjectAuthor.objects.all()
     serializer_class = ProjectAuthorSerializer
 
+
 class SectionSet(viewsets.ModelViewSet):
-    permission_classes =  (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
+

@@ -66,22 +66,26 @@ class ArticleTagSerializer(serializers.ModelSerializer):
         fields = ('id', 'tag')
 
 
-class ArticleSerializer(serializers.ModelSerializer):
-    creator = ProfileSerializer()
-    tags = ArticleTagSerializer(many=True)
-
-    class Meta:
-        model = Article
-        fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'creator', 'tags')
-
-
 class CommentSerializer(serializers.ModelSerializer):
-    article = ArticleSerializer()
-    user = UserSerializer()
+    user = ProfileSerializer()
 
     class Meta:
         model = Comment
         fields = ('id', 'text', 'creation_date', 'article', 'user')
+        depth = 2
+
+
+class ArticleSerializer(serializers.ModelSerializer):
+    creator = ProfileSerializer()
+    tags = ArticleTagSerializer(many=True)
+    comments_number = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Article
+        fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'creator', 'tags', 'comments_number')
+
+    def get_comments_number(self, obj):
+        return obj.comments.count()
 
 
 class ArticleAuthorSerializer(serializers.ModelSerializer):
