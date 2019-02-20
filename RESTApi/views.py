@@ -68,7 +68,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         article_id = self.request.query_params.get('article', None)
-        if article_id is not None:
+        if article_id is None:
             return Comment.objects.all()
         return Comment.objects.filter(article=article_id)
 
