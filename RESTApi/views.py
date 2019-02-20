@@ -116,6 +116,7 @@ class ProjectSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    pagination_class = LimitOffsetPagination
 
 
 class ProjectAuthorSet(viewsets.ModelViewSet):
