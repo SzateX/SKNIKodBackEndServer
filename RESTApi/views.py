@@ -36,6 +36,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    pagination_class = LimitOffsetPagination
 
 
 class RepoLinkViewSet(viewsets.ModelViewSet):
