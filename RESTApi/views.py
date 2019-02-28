@@ -44,6 +44,12 @@ class RepoLinkViewSet(viewsets.ModelViewSet):
     queryset = RepoLink.objects.all()
     serializer_class = RepoLinkSerializer
 
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PUT'):
+            return RepoLinkSaveSerializer
+
+        return self.serializer_class
+
 
 class ArticleViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
@@ -61,6 +67,11 @@ class ArticleViewSet(viewsets.ModelViewSet):
             return Article.objects.filter(tags__tag__name=tag_name).order_by('-publication_date')
         return Article.objects.all().order_by('-publication_date')
 
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PUT'):
+            return ArticleSaveSerializer
+        return self.serializer_class
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
@@ -72,6 +83,11 @@ class CommentViewSet(viewsets.ModelViewSet):
         if article_id is None:
             return Comment.objects.all()
         return Comment.objects.filter(article=article_id)
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PUT'):
+            return CommentSaveSerializer
+        return self.serializer_class
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -86,11 +102,21 @@ class ArticleAuthorSet(viewsets.ModelViewSet):
     queryset = ArticleAuthor.objects.all()
     serializer_class = ArticleAuthorSerializer
 
+    def get_serializer_class(self):
+        if self.request.methos in ('POST', 'PUT'):
+            return ArticleAuthorSaveSerializer
+        return self.serializer_class
+
 
 class ArticleTagSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = ArticleTag.objects.all()
     serializer_class = ArticleTagSerializer
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PUT'):
+            return ArticleTagSaveSerializer
+        return self.serializer_class
 
 
 class FileSet(viewsets.ModelViewSet):
@@ -98,11 +124,21 @@ class FileSet(viewsets.ModelViewSet):
     queryset = File.objects.all()
     serializer_class = FileSerializer
 
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PUT'):
+            return FileSaveSerializer
+        return self.serializer_class
+
 
 class HardwareRentalSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = HardwareRental.objects.all()
     serializer_class = HardwareRentalSerializer
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PUT'):
+            return HardwareRentalSaveSerializer
+        return self.serializer_class
 
 
 class HardwareSet(viewsets.ModelViewSet):
@@ -111,6 +147,11 @@ class HardwareSet(viewsets.ModelViewSet):
     serializer_class = HardwareSerializer
     pagination_class = LimitOffsetPagination
 
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PUT'):
+            return HardwareSaveSerializer
+        return self.serializer_class
+
 
 class ProjectSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
@@ -118,11 +159,21 @@ class ProjectSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
     pagination_class = LimitOffsetPagination
 
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PUT'):
+            return ProjectSaveSerializer
+        return self.serializer_class
+
 
 class ProjectAuthorSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = ProjectAuthor.objects.all()
     serializer_class = ProjectAuthorSerializer
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PUT'):
+            return ProjectAuthorSaveSerializer
+        return self.serializer_class
 
 
 class SectionSet(viewsets.ModelViewSet):
