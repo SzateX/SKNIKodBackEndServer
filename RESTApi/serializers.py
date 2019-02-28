@@ -54,6 +54,12 @@ class RepoLinkSerializer(serializers.ModelSerializer):
         fields = ('id', 'link', 'user')
 
 
+class RepoLinkSaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RepoLink
+        fields = ('id', 'link', 'user')
+
+
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
@@ -68,9 +74,22 @@ class ArticleTagSerializer(serializers.ModelSerializer):
         fields = ('id', 'tag')
 
 
+class ArticleTagSaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ArticleTag
+        fields = ('id', 'tag')
+
+
 class CommentSerializer(serializers.ModelSerializer):
     user = ProfileSerializer()
 
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'creation_date', 'article_id', 'user')
+        depth = 2
+
+
+class CommentSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('id', 'text', 'creation_date', 'article_id', 'user')
@@ -90,6 +109,12 @@ class ArticleSerializer(serializers.ModelSerializer):
         return obj.comments.count()
 
 
+class ArticleSaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Article
+        fields = ('id', 'alias', 'title', 'text', 'creation_date', 'publication_date', 'creator')
+
+
 class ArticleAuthorSerializer(serializers.ModelSerializer):
     user = ProfileSerializer()
     article = ArticleSerializer()
@@ -99,10 +124,22 @@ class ArticleAuthorSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'article')
 
 
+class ArticleAuthorSaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ArticleAuthor
+        fields = ('id', 'user', 'article')
+
+
 class FileSerializer(serializers.ModelSerializer):
     user = ProfileSerializer()
     article = ArticleSerializer()
 
+    class Meta:
+        model = File
+        fields = ('id', 'creation_date', 'user', 'article')
+
+
+class FileSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
         fields = ('id', 'creation_date', 'user', 'article')
@@ -119,10 +156,22 @@ class HardwareSerializer(serializers.ModelSerializer):
         return obj.rentals.filter(return_date__isnull=True).exists()
 
 
+class HardwareSaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hardware
+        fields = ('id', 'name', 'description', 'serial_number')
+
+
 class HardwareRentalSerializer(serializers.ModelSerializer):
     user = ProfileSerializer()
     hardware = HardwareSerializer()
 
+    class Meta:
+        model = HardwareRental
+        fields = ('id', 'rental_date', 'return_date', 'user', 'hardware')
+
+
+class HardwareRentalSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = HardwareRental
         fields = ('id', 'rental_date', 'return_date', 'user', 'hardware')
@@ -143,10 +192,22 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'repository_link', 'creator', 'section')
 
 
+class ProjectSaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'repository_link', 'creator', 'section')
+
+
 class ProjectAuthorSerializer(serializers.ModelSerializer):
     user = ProfileSerializer()
     project = ProjectSerializer()
 
+    class Meta:
+        model = ProjectAuthor
+        fields = ('id', 'user', 'project')
+
+
+class ProjectAuthorSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectAuthor
         fields = ('id', 'user', 'project')
