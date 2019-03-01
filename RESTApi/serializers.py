@@ -71,13 +71,13 @@ class ArticleTagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ArticleTag
-        fields = ('id', 'tag')
+        fields = ('id', 'tag', 'article')
 
 
 class ArticleTagSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArticleTag
-        fields = ('id', 'tag')
+        fields = ('id', 'tag', 'article')
 
 
 class CommentSerializer(serializers.ModelSerializer):
