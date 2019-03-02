@@ -102,3 +102,4 @@ class Section(models.Model):
     name = models.TextField()
     description = models.TextField()
     isVisible = models.BooleanField()
+    icon = models.TextField(null=True, blank=True)

@@ -180,7 +180,7 @@ class HardwareRentalSaveSerializer(serializers.ModelSerializer):
 class SectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Section
-        fields = ('id', 'name', 'description', 'isVisible')
+        fields = ('id', 'name', 'description', 'isVisible', 'icon')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
