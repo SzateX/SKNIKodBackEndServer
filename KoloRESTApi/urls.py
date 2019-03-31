@@ -40,6 +40,7 @@ router.register(r'hardwares', views.HardwareSet)
 router.register(r'project', views.ProjectSet)
 router.register(r'project_author', views.ProjectAuthorSet)
 router.register(r'section', views.SectionSet)
+router.register(r'gallery', views.GallerySet)
 
 
 schema_view = get_swagger_view(title='SKNI KOD Website API')

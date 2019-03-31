@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
-    ArticleTag, File, HardwareRental, Hardware, Project, ProjectAuthor, Section
+    ArticleTag, File, HardwareRental, Hardware, Project, ProjectAuthor, \
+    Section, Gallery
+
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -44,6 +46,12 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ('id', 'user')
+
+
+class GallerySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Gallery
+        fields = ('id', 'article', 'image')
 
 
 class RepoLinkSerializer(serializers.ModelSerializer):
@@ -100,10 +108,11 @@ class ArticleSerializer(serializers.ModelSerializer):
     creator = ProfileSerializer()
     tags = ArticleTagSerializer(many=True)
     comments_number = serializers.SerializerMethodField()
+    gallery = GallerySerializer()
 
     class Meta:
         model = Article
-        fields = ('id', 'alias', 'title', 'text', 'creation_date', 'publication_date', 'creator', 'tags', 'comments_number')
+        fields = ('id', 'alias', 'title', 'text', 'creation_date', 'publication_date', 'creator', 'tags', 'comments_number', 'gallery')
 
     def get_comments_number(self, obj):
         return obj.comments.count()

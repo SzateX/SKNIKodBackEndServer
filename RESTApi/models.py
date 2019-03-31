@@ -103,3 +103,8 @@ class Section(models.Model):
     description = models.TextField()
     isVisible = models.BooleanField()
     icon = models.TextField(null=True, blank=True)
+
+
+class Gallery(models.Model):
+    article = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='gallery')
+    image = models.ImageField(upload_to='gallery/')

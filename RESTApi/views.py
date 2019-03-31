@@ -181,3 +181,14 @@ class SectionSet(viewsets.ModelViewSet):
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
 
+
+class GallerySet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    queryset = Gallery.objects.all()
+    serializer_class = GallerySerializer
+
+    def get_queryset(self):
+        article_id = self.request.query_params.get('article', None)
+        if article_id is None:
+            return Gallery.objects.all()
+        return Gallery.objects.filter(article=article_id)
