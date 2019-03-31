@@ -24,7 +24,8 @@ def save_user_profile(sender, instance, **kwargs):
 class RepoLink(models.Model):
     # Admin Owner
     link = models.CharField(max_length=100)
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='repo_links')
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE,
+                             related_name='repo_links')
 
 
 class Article(models.Model):
@@ -34,16 +35,20 @@ class Article(models.Model):
     text = models.TextField()
     creation_date = models.DateTimeField()
     publication_date = models.DateTimeField(null=True)
-    creator = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='articles')
+    creator = models.ForeignKey('Profile', on_delete=models.CASCADE,
+                                related_name='articles')
 
 
 class Comment(models.Model):
     # Admin Owner
     text = models.TextField()
     creation_date = models.DateTimeField(default=timezone.now)
-    article = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='comments', null=True)
-    project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='comments', null=True)
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='comments')
+    article = models.ForeignKey('Article', on_delete=models.CASCADE,
+                                related_name='comments', null=True)
+    project = models.ForeignKey('Project', on_delete=models.CASCADE,
+                                related_name='comments', null=True)
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE,
+                             related_name='comments')
 
 
 class Tag(models.Model):
@@ -53,26 +58,34 @@ class Tag(models.Model):
 
 class ArticleAuthor(models.Model):
     # Admin
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='authors')
-    article = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='authors')
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE,
+                             related_name='authors')
+    article = models.ForeignKey('Article', on_delete=models.CASCADE,
+                                related_name='authors')
 
 
 class ArticleTag(models.Model):
     # Admin
-    tag = models.ForeignKey('Tag', on_delete=models.CASCADE, related_name='tags')
-    article = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='tags')
+    tag = models.ForeignKey('Tag', on_delete=models.CASCADE,
+                            related_name='tags')
+    article = models.ForeignKey('Article', on_delete=models.CASCADE,
+                                related_name='tags')
 
 
 class File(models.Model):
     # Admin
     creation_date = models.DateTimeField(default=timezone.now)
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='files')
-    article = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='files')
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE,
+                             related_name='files')
+    article = models.ForeignKey('Article', on_delete=models.CASCADE,
+                                related_name='files')
 
 
 class HardwareRental(models.Model):
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='rentals')
-    hardware = models.ForeignKey('Hardware', on_delete=models.CASCADE, related_name='rentals')
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE,
+                             related_name='rentals')
+    hardware = models.ForeignKey('Hardware', on_delete=models.CASCADE,
+                                 related_name='rentals')
     rental_date = models.DateTimeField()
     return_date = models.DateTimeField(null=True, blank=True)
 
@@ -89,13 +102,17 @@ class Project(models.Model):
     creation_date = models.DateTimeField()
     publication_date = models.DateTimeField(null=True)
     repository_link = models.CharField(null=True, blank=True, max_length=100)
-    creator = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='projects')
-    section = models.ForeignKey('Section', on_delete=models.CASCADE, related_name='projects', null=True)
+    creator = models.ForeignKey('Profile', on_delete=models.CASCADE,
+                                related_name='projects')
+    section = models.ForeignKey('Section', on_delete=models.CASCADE,
+                                related_name='projects', null=True)
 
 
 class ProjectAuthor(models.Model):
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='project_authors')
-    project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='project_authors')
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE,
+                             related_name='project_authors')
+    project = models.ForeignKey('Project', on_delete=models.CASCADE,
+                                related_name='project_authors')
 
 
 class Section(models.Model):
@@ -106,5 +123,6 @@ class Section(models.Model):
 
 
 class Gallery(models.Model):
-    article = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='gallery')
+    article = models.ForeignKey('Article', on_delete=models.CASCADE,
+                                related_name='gallery')
     image = models.ImageField(upload_to='gallery/')

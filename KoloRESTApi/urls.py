@@ -42,17 +42,18 @@ router.register(r'project_author', views.ProjectAuthorSet)
 router.register(r'section', views.SectionSet)
 router.register(r'gallery', views.GallerySet)
 
-
 schema_view = get_swagger_view(title='SKNI KOD Website API')
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api-auth/',
+        include('rest_framework.urls', namespace='rest_framework')),
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^refresh-token/', TokenRefreshView.as_view(), name='token_refresh'),
-    url(r'^obtain-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    url(r'^obtain-token/', TokenObtainPairView.as_view(),
+        name='token_obtain_pair'),
     url(r'^verify-token/', TokenVerifyView.as_view(), name='token_verify'),
     url(r'^docs$', schema_view),
 ]

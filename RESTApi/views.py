@@ -64,7 +64,8 @@ class ArticleViewSet(viewsets.ModelViewSet):
             return Article.objects.filter(tags__tag=tag_id).order_by(
                 '-publication_date')
         if tag_name is not None:
-            return Article.objects.filter(tags__tag__name=tag_name).order_by('-publication_date')
+            return Article.objects.filter(tags__tag__name=tag_name).order_by(
+                '-publication_date')
         return Article.objects.all().order_by('-publication_date')
 
     def get_serializer_class(self):
@@ -91,7 +92,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 
 class TagViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly, )
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     queryset = Tag.objects.all()
     serializer_class = TagSerializer

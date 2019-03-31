@@ -5,11 +5,11 @@ from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
     Section, Gallery
 
 
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'groups', 'profile', 'password', 'first_name', 'last_name')
+        fields = ('id', 'username', 'email', 'groups', 'profile', 'password',
+                  'first_name', 'last_name')
         read_only_fields = ('profile', 'groups')
         extra_kwargs = {
             'password': {'write_only': True}
@@ -112,7 +112,10 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ('id', 'alias', 'title', 'text', 'creation_date', 'publication_date', 'creator', 'tags', 'comments_number', 'gallery')
+        fields = (
+            'id', 'alias', 'title', 'text', 'creation_date',
+            'publication_date', 'creator', 'tags', 'comments_number',
+            'gallery')
 
     def get_comments_number(self, obj):
         return obj.comments.count()
@@ -121,7 +124,9 @@ class ArticleSerializer(serializers.ModelSerializer):
 class ArticleSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
-        fields = ('id', 'alias', 'title', 'text', 'creation_date', 'publication_date', 'creator')
+        fields = (
+        'id', 'alias', 'title', 'text', 'creation_date', 'publication_date',
+        'creator')
 
 
 class ArticleAuthorSerializer(serializers.ModelSerializer):
@@ -156,7 +161,7 @@ class FileSaveSerializer(serializers.ModelSerializer):
 
 class HardwareSerializer(serializers.ModelSerializer):
     is_rented = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = Hardware
         fields = ('id', 'name', 'description', 'serial_number', 'is_rented')
@@ -198,13 +203,15 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'repository_link', 'creator', 'section')
+        fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
+                  'repository_link', 'creator', 'section')
 
 
 class ProjectSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'repository_link', 'creator', 'section')
+        fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
+                  'repository_link', 'creator', 'section')
 
 
 class ProjectAuthorSerializer(serializers.ModelSerializer):
