@@ -108,7 +108,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     creator = ProfileSerializer()
     tags = ArticleTagSerializer(many=True)
     comments_number = serializers.SerializerMethodField()
-    gallery = GallerySerializer()
+    gallery = GallerySerializer(many=True)
 
     class Meta:
         model = Article
