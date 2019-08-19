@@ -21,6 +21,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+from django.conf.urls.static import static
+from . import settings
 from rest_framework_swagger.views import get_swagger_view
 from RESTApi import views
 
@@ -56,4 +58,4 @@ urlpatterns = [
         name='token_obtain_pair'),
     url(r'^verify-token/', TokenVerifyView.as_view(), name='token_verify'),
     url(r'^docs$', schema_view),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

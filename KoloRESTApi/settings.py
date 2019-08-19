@@ -161,3 +161,11 @@ SWAGGER_SETTINGS = {
 
 LOGIN_URL = 'rest_framework:login'
 LOGOUT_URL = 'rest_framework:logout'
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "mediafolder")
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "staticfolder")
+]
