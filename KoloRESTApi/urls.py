@@ -22,6 +22,8 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 from django.conf.urls.static import static
+
+from RESTApi.views import IndexTemplateView
 from . import settings
 from rest_framework_swagger.views import get_swagger_view
 from RESTApi import views
@@ -47,8 +49,9 @@ router.register(r'gallery', views.GallerySet)
 schema_view = get_swagger_view(title='SKNI KOD Website API')
 
 urlpatterns = [
+    url(r'^$', IndexTemplateView.as_view()),
     url(r'^admin/', admin.site.urls),
-    url(r'^', include(router.urls)),
+    url(r'^api/', include(router.urls)),
     url(r'^api-auth/',
         include('rest_framework.urls', namespace='rest_framework')),
     url(r'^rest-auth/', include('rest_auth.urls')),

@@ -59,6 +59,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'KoloRESTApi.urls'
+SECURE_CONTENT_TYPE_NOSNIFF = False
 
 TEMPLATES = [
     {
@@ -168,6 +169,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "mediafolder")
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfolder")
 
-STATICFILES_DIRS = [
+"""STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "staticfolder")
-]
+]"""

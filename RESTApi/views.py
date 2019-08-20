@@ -1,5 +1,6 @@
 import django_filters
 from django.contrib.auth.models import User, Group
+from django.views.generic import TemplateView
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.pagination import LimitOffsetPagination
@@ -8,6 +9,10 @@ from .models import *
 from RESTApi.serializers import *
 
 from rest_framework import permissions
+
+
+class IndexTemplateView(TemplateView):
+    template_name = 'index.html'
 
 
 class UserViewSet(viewsets.ModelViewSet):
