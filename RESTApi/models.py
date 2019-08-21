@@ -9,6 +9,9 @@ class Profile(models.Model):
     # Admin Owner
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.user.username
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -27,6 +30,9 @@ class RepoLink(models.Model):
     user = models.ForeignKey('Profile', on_delete=models.CASCADE,
                              related_name='repo_links')
 
+    def __str__(self):
+        return "%s: %s" % (self.user.user.username, self.link)
+
 
 class Article(models.Model):
     # Admin Owner
@@ -37,6 +43,9 @@ class Article(models.Model):
     publication_date = models.DateTimeField(null=True)
     creator = models.ForeignKey('Profile', on_delete=models.CASCADE,
                                 related_name='articles')
+
+    def __str__(self):
+        return self.title
 
 
 class Comment(models.Model):
@@ -49,6 +58,9 @@ class Comment(models.Model):
                                 related_name='comments', null=True)
     user = models.ForeignKey('Profile', on_delete=models.CASCADE,
                              related_name='comments')
+
+    def __str__(self):
+        return "%s: %s - %s" % (self.article.title, self.user, self.text[0:50] + "..." if len(self.text) > 50 else self.text)
 
 
 class Tag(models.Model):
@@ -63,6 +75,9 @@ class ArticleAuthor(models.Model):
     article = models.ForeignKey('Article', on_delete=models.CASCADE,
                                 related_name='authors')
 
+    def __str__(self):
+        return "%s - %s" % (self.user.user.username, self.article.title)
+
 
 class ArticleTag(models.Model):
     # Admin
@@ -70,6 +85,9 @@ class ArticleTag(models.Model):
                             related_name='tags')
     article = models.ForeignKey('Article', on_delete=models.CASCADE,
                                 related_name='tags')
+
+    def __str__(self):
+        return "%s - %s" % (self.tag.name, self.article.title)
 
 
 class File(models.Model):
@@ -80,6 +98,9 @@ class File(models.Model):
     article = models.ForeignKey('Article', on_delete=models.CASCADE,
                                 related_name='files')
 
+    def __str__(self):
+        return "%s - %s" % (self.user.user.username, self.article.title)
+
 
 class HardwareRental(models.Model):
     user = models.ForeignKey('Profile', on_delete=models.CASCADE,
@@ -89,11 +110,17 @@ class HardwareRental(models.Model):
     rental_date = models.DateTimeField()
     return_date = models.DateTimeField(null=True, blank=True)
 
+    def __str__(self):
+        return "%s - %s" % (self.user.user.username, self.hardware.name)
+
 
 class Hardware(models.Model):
     name = models.TextField()
     description = models.TextField()
     serial_number = models.TextField()
+
+    def __str__(self):
+        return self.name
 
 
 class Project(models.Model):
@@ -107,12 +134,18 @@ class Project(models.Model):
     section = models.ForeignKey('Section', on_delete=models.CASCADE,
                                 related_name='projects', null=True)
 
+    def __str__(self):
+        return self.title
+
 
 class ProjectAuthor(models.Model):
     user = models.ForeignKey('Profile', on_delete=models.CASCADE,
                              related_name='project_authors')
     project = models.ForeignKey('Project', on_delete=models.CASCADE,
                                 related_name='project_authors')
+
+    def __str__(self):
+        return "%s - %s" % (self.user.user.username, self.project.title)
 
 
 class Section(models.Model):
@@ -121,8 +154,17 @@ class Section(models.Model):
     isVisible = models.BooleanField()
     icon = models.TextField(null=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Gallery(models.Model):
     article = models.ForeignKey('Article', on_delete=models.CASCADE,
                                 related_name='gallery')
     image = models.ImageField(upload_to='gallery/')
+
+    def __str__(self):
+        return "%s - %s" % (self.article.title, self.image.name)
+
+    class Meta:
+        verbose_name_plural = "galleries"
