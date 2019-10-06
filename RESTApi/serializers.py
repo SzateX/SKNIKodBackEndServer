@@ -197,14 +197,23 @@ class SectionSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description', 'isVisible', 'icon')
 
 
+class ProjectAuthorProjectDetailSerializes(serializers.ModelSerializer):
+    user = ProfileSerializer()
+
+    class Meta:
+        model = ProjectAuthor
+        field = ('id', 'user')
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     creator = ProfileSerializer()
     section = SectionSerializer()
+    project_authors = ProjectAuthorProjectDetailSerializes()
 
     class Meta:
         model = Project
         fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
-                  'repository_link', 'creator', 'section')
+                  'repository_link', 'creator', 'section', 'project_authors')
 
 
 class ProjectSaveSerializer(serializers.ModelSerializer):
