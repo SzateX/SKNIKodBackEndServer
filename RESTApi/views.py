@@ -161,7 +161,7 @@ class HardwareSet(viewsets.ModelViewSet):
 
 class ProjectSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = Project.objects.all()
+    queryset = Project.objects.all().prefetch_related('project_authors')
     serializer_class = ProjectSerializer
     pagination_class = LimitOffsetPagination
 

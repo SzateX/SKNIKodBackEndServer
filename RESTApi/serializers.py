@@ -202,13 +202,13 @@ class ProjectAuthorProjectDetailSerializes(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectAuthor
-        field = ('id', 'user')
+        fields = ('id', 'user')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
     creator = ProfileSerializer()
     section = SectionSerializer()
-    project_authors = ProjectAuthorProjectDetailSerializes()
+    project_authors = ProjectAuthorProjectDetailSerializes(many=True)
 
     class Meta:
         model = Project
@@ -223,9 +223,19 @@ class ProjectSaveSerializer(serializers.ModelSerializer):
                   'repository_link', 'creator', 'section')
 
 
+class ProjectAuthorProjectSerializer(serializers.ModelSerializer):
+    creator = ProfileSerializer()
+    section = SectionSerializer()
+
+    class Meta:
+        model = Project
+        fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
+                  'repository_link', 'creator', 'section')
+
+
 class ProjectAuthorSerializer(serializers.ModelSerializer):
     user = ProfileSerializer()
-    project = ProjectSerializer()
+    project = ProjectAuthorProjectSerializer()
 
     class Meta:
         model = ProjectAuthor
