@@ -4,6 +4,8 @@ from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
     ArticleTag, File, HardwareRental, Hardware, Project, ProjectAuthor, \
     Section, Gallery
 
+from sorl_thumbnail_serializer.fields import HyperlinkedSorlImageField
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -49,9 +51,16 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class GallerySerializer(serializers.ModelSerializer):
+    thumbnail = HyperlinkedSorlImageField(
+        '512x512',
+        options={"crop": "center"},
+        source='image',
+        read_only=True
+    )
+
     class Meta:
         model = Gallery
-        fields = ('id', 'article', 'image')
+        fields = ('id', 'article', 'image', 'thumbnail')
 
 
 class RepoLinkSerializer(serializers.ModelSerializer):

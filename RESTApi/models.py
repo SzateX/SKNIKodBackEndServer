@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from sorl.thumbnail import ImageField
 
 
 class Profile(models.Model):
@@ -161,7 +162,7 @@ class Section(models.Model):
 class Gallery(models.Model):
     article = models.ForeignKey('Article', on_delete=models.CASCADE,
                                 related_name='gallery')
-    image = models.ImageField(upload_to='gallery/')
+    image = ImageField(upload_to='gallery/')
 
     def __str__(self):
         return "%s - %s" % (self.article.title, self.image.name)
