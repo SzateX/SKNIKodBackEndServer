@@ -109,7 +109,7 @@ class ArticleAuthorSet(viewsets.ModelViewSet):
     serializer_class = ArticleAuthorSerializer
 
     def get_serializer_class(self):
-        if self.request.methos in ('POST', 'PUT'):
+        if self.request.method in ('POST', 'PUT'):
             return ArticleAuthorSaveSerializer
         return self.serializer_class
 
