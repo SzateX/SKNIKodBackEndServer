@@ -135,7 +135,7 @@ class ArticleSaveSerializer(serializers.ModelSerializer):
         model = Article
         fields = (
         'id', 'alias', 'title', 'text', 'creation_date', 'publication_date',
-        'creator')
+        'creator', 'tags')
 
 
 class ArticleAuthorSerializer(serializers.ModelSerializer):

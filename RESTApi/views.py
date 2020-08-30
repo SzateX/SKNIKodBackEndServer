@@ -84,7 +84,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
         return Article.objects.all().order_by('-publication_date')
 
     def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT'):
+        if self.request.method in ('POST', 'PUT', 'PATCH'):
             return ArticleSaveSerializer
         return self.serializer_class
 
