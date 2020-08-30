@@ -76,10 +76,10 @@ class ArticleViewSet(viewsets.ModelViewSet):
         tag_id = self.request.query_params.get('tag', None)
         tag_name = self.request.query_params.get('tagname', None)
         if tag_id is not None:
-            return Article.objects.filter(tags__tag=tag_id).order_by(
+            return Article.objects.filter(tags=tag_id).order_by(
                 '-publication_date')
         if tag_name is not None:
-            return Article.objects.filter(tags__tag__name=tag_name).order_by(
+            return Article.objects.filter(tags__name=tag_name).order_by(
                 '-publication_date')
         return Article.objects.all().order_by('-publication_date')
 
