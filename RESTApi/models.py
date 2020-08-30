@@ -35,6 +35,11 @@ class RepoLink(models.Model):
         return "%s: %s" % (self.user.user.username, self.link)
 
 
+class Tag(models.Model):
+    # Admin Owner
+    name = models.CharField(max_length=50)
+
+
 class Article(models.Model):
     # Admin Owner
     title = models.CharField(max_length=100)
@@ -44,6 +49,7 @@ class Article(models.Model):
     publication_date = models.DateTimeField(null=True)
     creator = models.ForeignKey('Profile', on_delete=models.CASCADE,
                                 related_name='articles')
+    tags = models.ManyToManyField(Tag)
 
     def __str__(self):
         return self.title
@@ -64,11 +70,6 @@ class Comment(models.Model):
         return "%s: %s - %s" % (self.article.title, self.user, self.text[0:50] + "..." if len(self.text) > 50 else self.text)
 
 
-class Tag(models.Model):
-    # Admin Owner
-    name = models.CharField(max_length=50)
-
-
 class ArticleAuthor(models.Model):
     # Admin
     user = models.ForeignKey('Profile', on_delete=models.CASCADE,
@@ -80,15 +81,15 @@ class ArticleAuthor(models.Model):
         return "%s - %s" % (self.user.user.username, self.article.title)
 
 
-class ArticleTag(models.Model):
-    # Admin
-    tag = models.ForeignKey('Tag', on_delete=models.CASCADE,
-                            related_name='tags')
-    article = models.ForeignKey('Article', on_delete=models.CASCADE,
-                                related_name='tags')
-
-    def __str__(self):
-        return "%s - %s" % (self.tag.name, self.article.title)
+# class ArticleTag(models.Model):
+#     # Admin
+#     tag = models.ForeignKey('Tag', on_delete=models.CASCADE,
+#                             related_name='tags')
+#     article = models.ForeignKey('Article', on_delete=models.CASCADE,
+#                                 related_name='tags')
+#
+#     def __str__(self):
+#         return "%s - %s" % (self.tag.name, self.article.title)
 
 
 class File(models.Model):

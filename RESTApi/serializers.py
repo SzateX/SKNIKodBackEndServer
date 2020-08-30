@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
-    ArticleTag, File, HardwareRental, Hardware, Project, ProjectAuthor, \
-    Section, Gallery
+    File, HardwareRental, Hardware, Project, ProjectAuthor, \
+    Section, Gallery # ArticleTag
 
 from sorl_thumbnail_serializer.fields import HyperlinkedSorlImageField
 
@@ -83,18 +83,18 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-class ArticleTagSerializer(serializers.ModelSerializer):
-    tag = TagSerializer()
+# class ArticleTagSerializer(serializers.ModelSerializer):
+#     tag = TagSerializer()
+#
+#     class Meta:
+#         model = ArticleTag
+#         fields = ('id', 'tag', 'article')
 
-    class Meta:
-        model = ArticleTag
-        fields = ('id', 'tag', 'article')
 
-
-class ArticleTagSaveSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ArticleTag
-        fields = ('id', 'tag', 'article')
+# class ArticleTagSaveSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ArticleTag
+#         fields = ('id', 'tag', 'article')
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -115,7 +115,8 @@ class CommentSaveSerializer(serializers.ModelSerializer):
 
 class ArticleSerializer(serializers.ModelSerializer):
     creator = ProfileSerializer()
-    tags = ArticleTagSerializer(many=True)
+    # tags = ArticleTagSerializer(many=True)
+    tags = TagSerializer(many=True)
     comments_number = serializers.SerializerMethodField()
     gallery = GallerySerializer(many=True)
 
@@ -136,6 +137,17 @@ class ArticleSaveSerializer(serializers.ModelSerializer):
         fields = (
         'id', 'alias', 'title', 'text', 'creation_date', 'publication_date',
         'creator', 'tags')
+
+    def update(self, instance, validated_data):
+        print(validated_data)
+        """for attr, value in validated_data.items():
+            if attr == "tags":
+                ids = [obj.id for obj in value]
+                ArticleTag.objects.exclude(pk__in=ids).delete()
+            else:
+                setattr(instance, attr, value)
+        instance.save()"""
+        return instance
 
 
 class ArticleAuthorSerializer(serializers.ModelSerializer):

@@ -124,15 +124,15 @@ class ArticleAuthorSet(viewsets.ModelViewSet):
         return self.serializer_class
 
 
-class ArticleTagSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = ArticleTag.objects.all()
-    serializer_class = ArticleTagSerializer
-
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT'):
-            return ArticleTagSaveSerializer
-        return self.serializer_class
+# class ArticleTagSet(viewsets.ModelViewSet):
+#     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+#     queryset = ArticleTag.objects.all()
+#     serializer_class = ArticleTagSerializer
+#
+#     def get_serializer_class(self):
+#         if self.request.method in ('POST', 'PUT'):
+#             return ArticleTagSaveSerializer
+#         return self.serializer_class
 
 
 class FileSet(viewsets.ModelViewSet):
