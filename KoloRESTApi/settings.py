@@ -37,10 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'RESTApi.apps.RestapiConfig',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github'
     'rest_auth.registration',
     'corsheaders',
     'rest_framework_swagger',

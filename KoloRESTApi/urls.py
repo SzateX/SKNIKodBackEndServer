@@ -55,6 +55,7 @@ urlpatterns = [
     url(r'^api-auth/',
         include('rest_framework.urls', namespace='rest_framework')),
     url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^rest-auth/github/$', views.GitHubLogin.as_view(), name='github_login'),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^refresh-token/', TokenRefreshView.as_view(), name='token_refresh'),
     url(r'^obtain-token/', TokenObtainPairView.as_view(),
