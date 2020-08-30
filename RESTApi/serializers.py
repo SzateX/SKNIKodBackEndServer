@@ -138,17 +138,6 @@ class ArticleSaveSerializer(serializers.ModelSerializer):
         'id', 'alias', 'title', 'text', 'creation_date', 'publication_date',
         'creator', 'tags')
 
-    def update(self, instance, validated_data):
-        print(validated_data)
-        """for attr, value in validated_data.items():
-            if attr == "tags":
-                ids = [obj.id for obj in value]
-                ArticleTag.objects.exclude(pk__in=ids).delete()
-            else:
-                setattr(instance, attr, value)
-        instance.save()"""
-        return instance
-
 
 class ArticleAuthorSerializer(serializers.ModelSerializer):
     user = ProfileSerializer()
