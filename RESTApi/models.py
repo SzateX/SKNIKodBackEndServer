@@ -40,6 +40,9 @@ class Tag(models.Model):
     # Admin Owner
     name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return f"Tag: {self.name}"
+
 
 class Article(models.Model):
     # Admin Owner
@@ -50,8 +53,8 @@ class Article(models.Model):
     publication_date = models.DateTimeField(null=True)
     creator = models.ForeignKey('Profile', on_delete=models.CASCADE,
                                 related_name='articles')
-    authors = models.ManyToManyField('Profile')
-    tags = models.ManyToManyField(Tag)
+    authors = models.ManyToManyField('Profile', null=True)
+    tags = models.ManyToManyField(Tag, null=True)
 
     def __str__(self):
         return self.title
