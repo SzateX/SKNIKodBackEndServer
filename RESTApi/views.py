@@ -75,12 +75,18 @@ class ArticleViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         tag_id = self.request.query_params.get('tag', None)
         tag_name = self.request.query_params.get('tagname', None)
+        author_id = self.request.query_params.get('author', None)
+        author_name = self.request.query_params.get('authorname', None)
         if tag_id is not None:
             return Article.objects.filter(tags=tag_id).order_by(
                 '-publication_date')
         if tag_name is not None:
             return Article.objects.filter(tags__name=tag_name).order_by(
                 '-publication_date')
+        if author_id is not None:
+            return Article.objects.filter(authors=author_id).order_by('-publication_date')
+        if author_name is not None:
+            return Article.objects.filter(authors__user__username=author_name).order_by('-publication_date')
         return Article.objects.all().order_by('-publication_date')
 
     def get_serializer_class(self):
@@ -113,7 +119,7 @@ class TagViewSet(viewsets.ModelViewSet):
     serializer_class = TagSerializer
 
 
-class ArticleAuthorSet(viewsets.ModelViewSet):
+"""class ArticleAuthorSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = ArticleAuthor.objects.all()
     serializer_class = ArticleAuthorSerializer
@@ -121,7 +127,7 @@ class ArticleAuthorSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PUT'):
             return ArticleAuthorSaveSerializer
-        return self.serializer_class
+        return self.serializer_class"""
 
 
 # class ArticleTagSet(viewsets.ModelViewSet):

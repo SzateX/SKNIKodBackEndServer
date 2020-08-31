@@ -49,6 +49,7 @@ class Article(models.Model):
     publication_date = models.DateTimeField(null=True)
     creator = models.ForeignKey('Profile', on_delete=models.CASCADE,
                                 related_name='articles')
+    authors = models.ManyToManyField('Profile')
     tags = models.ManyToManyField(Tag)
 
     def __str__(self):
@@ -70,7 +71,7 @@ class Comment(models.Model):
         return "%s: %s - %s" % (self.article.title, self.user, self.text[0:50] + "..." if len(self.text) > 50 else self.text)
 
 
-class ArticleAuthor(models.Model):
+"""class ArticleAuthor(models.Model):
     # Admin
     user = models.ForeignKey('Profile', on_delete=models.CASCADE,
                              related_name='authors')
@@ -78,7 +79,7 @@ class ArticleAuthor(models.Model):
                                 related_name='authors')
 
     def __str__(self):
-        return "%s - %s" % (self.user.user.username, self.article.title)
+        return "%s - %s" % (self.user.user.username, self.article.title)"""
 
 
 # class ArticleTag(models.Model):

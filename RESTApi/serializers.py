@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import Profile, RepoLink, Article, Comment, Tag, ArticleAuthor, \
+from .models import Profile, RepoLink, Article, Comment, Tag, \
     File, HardwareRental, Hardware, Project, ProjectAuthor, \
-    Section, Gallery # ArticleTag
+    Section, Gallery  # ArticleTag, ArticleAuthor
 
 from sorl_thumbnail_serializer.fields import HyperlinkedSorlImageField
 
@@ -139,19 +139,19 @@ class ArticleSaveSerializer(serializers.ModelSerializer):
         'creator', 'tags')
 
 
-class ArticleAuthorSerializer(serializers.ModelSerializer):
+"""class ArticleAuthorSerializer(serializers.ModelSerializer):
     user = ProfileSerializer()
     article = ArticleSerializer()
 
     class Meta:
         model = ArticleAuthor
-        fields = ('id', 'user', 'article')
+        fields = ('id', 'user', 'article')"""
 
 
-class ArticleAuthorSaveSerializer(serializers.ModelSerializer):
+"""class ArticleAuthorSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArticleAuthor
-        fields = ('id', 'user', 'article')
+        fields = ('id', 'user', 'article')"""
 
 
 class FileSerializer(serializers.ModelSerializer):
