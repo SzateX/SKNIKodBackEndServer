@@ -9,6 +9,7 @@ from sorl.thumbnail import ImageField
 class Profile(models.Model):
     # Admin Owner
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    description = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.user.username
