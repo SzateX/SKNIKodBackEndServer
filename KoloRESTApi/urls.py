@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url, include
+from rest_auth.registration.views import SocialAccountListView, \
+    SocialAccountDisconnectView
 from rest_framework import routers
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -56,6 +58,17 @@ urlpatterns = [
         include('rest_framework.urls', namespace='rest_framework')),
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/github/$', views.GitHubLogin.as_view(), name='github_login'),
+    url(r'^rest-auth/github/connect/$', views.GitHubConnect.as_view(), name='github_connect'),
+    url(
+        r'^socialaccounts/$',
+        SocialAccountListView.as_view(),
+        name='social_account_list'
+    ),
+    url(
+        r'^socialaccounts/(?P<pk>\d+)/disconnect/$',
+        SocialAccountDisconnectView.as_view(),
+        name='social_account_disconnect'
+    ),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^refresh-token/', TokenRefreshView.as_view(), name='token_refresh'),
     url(r'^obtain-token/', TokenObtainPairView.as_view(),
