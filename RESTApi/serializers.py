@@ -47,7 +47,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('id', 'user')
+        fields = ('id', 'user', 'description')
 
 
 class GallerySerializer(serializers.ModelSerializer):
@@ -124,7 +124,7 @@ class ArticleSerializer(serializers.ModelSerializer):
         model = Article
         fields = (
             'id', 'alias', 'title', 'text', 'creation_date',
-            'publication_date', 'creator', 'tags', 'comments_number',
+            'publication_date', 'creator', 'authors', 'tags', 'comments_number',
             'gallery')
 
     def get_comments_number(self, obj):
