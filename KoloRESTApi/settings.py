@@ -176,3 +176,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfolder")
 """STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "staticfolder")
 ]"""
+
+ACCOUNT_EMAIL_VERIFICATION = 'none'
