@@ -119,6 +119,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     comments_number = serializers.SerializerMethodField()
     gallery = GallerySerializer(many=True)
+    authors = ProfileSerializer(many=True)
 
     class Meta:
         model = Article
