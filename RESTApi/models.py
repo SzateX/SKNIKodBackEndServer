@@ -8,7 +8,7 @@ from sorl.thumbnail import ImageField
 
 class Profile(models.Model):
     # Admin Owner
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
