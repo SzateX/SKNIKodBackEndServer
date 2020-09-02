@@ -17,6 +17,8 @@ class UserSerializer(serializers.ModelSerializer):
             'password': {'write_only': True}
         }
 
+        depth = 1
+
     def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username'],
@@ -137,7 +139,7 @@ class ArticleSaveSerializer(serializers.ModelSerializer):
         model = Article
         fields = (
         'id', 'alias', 'title', 'text', 'creation_date', 'publication_date',
-        'creator', 'tags')
+        'creator', 'tags', 'authors', 'gallery')
 
 
 """class ArticleAuthorSerializer(serializers.ModelSerializer):
