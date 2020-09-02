@@ -32,7 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'groups', 'profile')
+        fields = ('id', 'username', 'email', 'groups', 'profile', 'first_name', 'last_name')
         read_only_fields = ('profile', 'groups', 'username')
 
 
