@@ -12,7 +12,7 @@ setup(
                       'django-rest-auth', 'django-allauth',
                       'django-cors-headers',
                       'httpie', 'django-rest-swagger',
-                      'djangorestframework_simplejwt'],
+                      'djangorestframework_simplejwt', 'Pillow', 'sorl-thumbnail', 'sorl-thumbnail-serializer-field'],
     license="MiT",
     keywords="www website etc",
     packages=find_packages(),
