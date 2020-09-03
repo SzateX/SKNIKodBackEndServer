@@ -1,10 +1,27 @@
+from allauth.account.adapter import get_adapter
+from allauth.account.utils import setup_user_email
 from django.contrib.auth.models import User, Group
+from rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from .models import Profile, RepoLink, Article, Comment, Tag, \
     File, HardwareRental, Hardware, Project, ProjectAuthor, \
     Section, Gallery  # ArticleTag, ArticleAuthor
 
 from sorl_thumbnail_serializer.fields import HyperlinkedSorlImageField
+
+
+class RegisterWithFullNameSerializer(RegisterSerializer):
+    first_name = serializers.CharField(required=True, max_length=150)
+    last_name = serializers.CharField(required=True, max_length=150)
+
+    def get_cleaned_data(self):
+        return {
+            'username': self.validated_data.get('username', ''),
+            'password1': self.validated_data.get('password1', ''),
+            'email': self.validated_data.get('email', ''),
+            'first_name': self.validated_data.get('first_name', ''),
+            'last_name': self.validated_data.get('last_name', '')
+        }
 
 
 class UserSerializer(serializers.ModelSerializer):
