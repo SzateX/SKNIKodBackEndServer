@@ -152,6 +152,8 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 
 class ArticleSaveSerializer(serializers.ModelSerializer):
+    gallery = serializers.PrimaryKeyRelatedField(many=True, required=False, queryset=Gallery.objects.all())
+
     class Meta:
         model = Article
         fields = (
