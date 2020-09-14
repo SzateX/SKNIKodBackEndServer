@@ -44,7 +44,7 @@ class ProfileLink(models.Model):
         (OTHER, 'OTHER')
     ]
 
-    link = models.CharField(max_length=100)
+    link = models.URLField()
     user = models.ForeignKey('Profile', on_delete=models.CASCADE,
                              related_name='profile_links')
     link_type = models.CharField(choices=LINK_TYPES, max_length=100)

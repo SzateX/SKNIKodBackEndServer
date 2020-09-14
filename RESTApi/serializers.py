@@ -34,8 +34,6 @@ class UserSerializer(serializers.ModelSerializer):
             'password': {'write_only': True}
         }
 
-        depth = 1
-
     def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username'],
@@ -46,6 +44,12 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+
+class ShortUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'first_name', 'last_name')
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
@@ -61,12 +65,27 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
+class ProfileLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProfileLink
+        fields = ('id', 'link', 'link_type', 'user')
+
+
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    profile_links = ProfileLinkSerializer(read_only=True, many=True)
 
     class Meta:
         model = Profile
         fields = ('id', 'user', 'description', 'avatar', 'profile_links')
+
+
+class ProfileShortSerializer(serializers.ModelSerializer):
+    user = ShortUserSerializer(read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ('id', 'user', 'description', 'profile_links')
 
 
 class GallerySerializer(serializers.ModelSerializer):
@@ -82,14 +101,6 @@ class GallerySerializer(serializers.ModelSerializer):
         fields = ('id', 'article', 'image', 'thumbnail')
 
 
-class ProfileLinkSerializer(serializers.ModelSerializer):
-    user = ProfileSerializer()
-
-    class Meta:
-        model = ProfileLink
-        fields = ('id', 'link', 'user', 'link_type')
-
-
 class ProfileLinkSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfileLink
@@ -103,7 +114,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = ProfileSerializer()
+    user = ProfileShortSerializer()
 
     class Meta:
         model = Comment
@@ -119,11 +130,11 @@ class CommentSaveSerializer(serializers.ModelSerializer):
 
 
 class ArticleSerializer(serializers.ModelSerializer):
-    creator = ProfileSerializer()
+    creator = ProfileShortSerializer()
     tags = TagSerializer(many=True)
     comments_number = serializers.SerializerMethodField()
     gallery = GallerySerializer(many=True)
-    authors = ProfileSerializer(many=True)
+    authors = ProfileShortSerializer(many=True)
 
     class Meta:
         model = Article
@@ -144,21 +155,6 @@ class ArticleSaveSerializer(serializers.ModelSerializer):
         fields = (
         'id', 'alias', 'title', 'text', 'creation_date', 'publication_date',
         'creator', 'tags', 'authors', 'gallery')
-
-
-"""class ArticleAuthorSerializer(serializers.ModelSerializer):
-    user = ProfileSerializer()
-    article = ArticleSerializer()
-
-    class Meta:
-        model = ArticleAuthor
-        fields = ('id', 'user', 'article')"""
-
-
-"""class ArticleAuthorSaveSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ArticleAuthor
-        fields = ('id', 'user', 'article')"""
 
 
 class FileSerializer(serializers.ModelSerializer):
@@ -194,7 +190,7 @@ class HardwareSaveSerializer(serializers.ModelSerializer):
 
 
 class HardwareRentalSerializer(serializers.ModelSerializer):
-    user = ProfileSerializer()
+    user = ProfileShortSerializer()
     hardware = HardwareSerializer()
 
     class Meta:
@@ -215,28 +211,18 @@ class SectionSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    creator = ProfileSerializer()
+    creator = ProfileShortSerializer()
     section = SectionSerializer()
-    project_authors = ProfileSerializer(many=True)
+    authors = ProfileShortSerializer(many=True)
 
     class Meta:
         model = Project
         fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
-                  'repository_link', 'creator', 'section', 'project_authors')
+                  'repository_link', 'creator', 'section', 'authors', 'gallery')
 
 
 class ProjectSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
-                  'repository_link', 'creator', 'section')
-
-
-class ProjectAuthorProjectSerializer(serializers.ModelSerializer):
-    creator = ProfileSerializer()
-    section = SectionSerializer()
-
-    class Meta:
-        model = Project
-        fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
-                  'repository_link', 'creator', 'section')
+                  'repository_link', 'creator', 'section', 'authors', 'gallery')

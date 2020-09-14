@@ -125,28 +125,6 @@ class TagViewSet(viewsets.ModelViewSet):
     serializer_class = TagSerializer
 
 
-"""class ArticleAuthorSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = ArticleAuthor.objects.all()
-    serializer_class = ArticleAuthorSerializer
-
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT'):
-            return ArticleAuthorSaveSerializer
-        return self.serializer_class"""
-
-
-# class ArticleTagSet(viewsets.ModelViewSet):
-#     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-#     queryset = ArticleTag.objects.all()
-#     serializer_class = ArticleTagSerializer
-#
-#     def get_serializer_class(self):
-#         if self.request.method in ('POST', 'PUT'):
-#             return ArticleTagSaveSerializer
-#         return self.serializer_class
-
-
 class FileSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = File.objects.all()
@@ -183,7 +161,7 @@ class HardwareSet(viewsets.ModelViewSet):
 
 class ProjectSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = Project.objects.all().prefetch_related('project_authors')
+    queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     pagination_class = LimitOffsetPagination
 
