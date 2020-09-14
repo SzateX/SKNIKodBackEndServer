@@ -10,6 +10,7 @@ class Profile(models.Model):
     # Admin Owner
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     description = models.TextField(null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', null=True)
 
     def __str__(self):
         return self.user.username
@@ -26,11 +27,27 @@ def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
 
-class RepoLink(models.Model):
+class ProfileLink(models.Model):
     # Admin Owner
+    GITHUB = 'GITHUB'
+    GITLAB = 'GITLAB'
+    BITBUCKET = 'BITBUCKET'
+    BLOG = 'BLOG'
+    PORTFOLIO = 'PORTFOLIO'
+    OTHER = 'OTHER'
+    LINK_TYPES = [
+        (GITHUB, 'GITHUB'),
+        (GITLAB, 'GITLAB'),
+        (BITBUCKET, 'BITBUCKET'),
+        (BLOG, 'BLOG'),
+        (PORTFOLIO, 'PORTFOLIO'),
+        (OTHER, 'OTHER')
+    ]
+
     link = models.CharField(max_length=100)
     user = models.ForeignKey('Profile', on_delete=models.CASCADE,
-                             related_name='repo_links')
+                             related_name='profile_links')
+    link_type = models.CharField(choices=LINK_TYPES, max_length=100)
 
     def __str__(self):
         return "%s: %s" % (self.user.user.username, self.link)
@@ -73,28 +90,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return "%s: %s - %s" % (self.article.title, self.user, self.text[0:50] + "..." if len(self.text) > 50 else self.text)
-
-
-"""class ArticleAuthor(models.Model):
-    # Admin
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE,
-                             related_name='authors')
-    article = models.ForeignKey('Article', on_delete=models.CASCADE,
-                                related_name='authors')
-
-    def __str__(self):
-        return "%s - %s" % (self.user.user.username, self.article.title)"""
-
-
-# class ArticleTag(models.Model):
-#     # Admin
-#     tag = models.ForeignKey('Tag', on_delete=models.CASCADE,
-#                             related_name='tags')
-#     article = models.ForeignKey('Article', on_delete=models.CASCADE,
-#                                 related_name='tags')
-#
-#     def __str__(self):
-#         return "%s - %s" % (self.tag.name, self.article.title)
 
 
 class File(models.Model):
@@ -140,19 +135,10 @@ class Project(models.Model):
                                 related_name='projects')
     section = models.ForeignKey('Section', on_delete=models.CASCADE,
                                 related_name='projects', null=True)
+    authors = models.ManyToManyField('Profile', blank=True)
 
     def __str__(self):
         return self.title
-
-
-class ProjectAuthor(models.Model):
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE,
-                             related_name='project_authors')
-    project = models.ForeignKey('Project', on_delete=models.CASCADE,
-                                related_name='project_authors')
-
-    def __str__(self):
-        return "%s - %s" % (self.user.user.username, self.project.title)
 
 
 class Section(models.Model):
@@ -175,3 +161,8 @@ class Gallery(models.Model):
 
     class Meta:
         verbose_name_plural = "galleries"
+
+
+class ProjectGallery(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='gallery')
+    image = ImageField(upload_to='project_gallery/')

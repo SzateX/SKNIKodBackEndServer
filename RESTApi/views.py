@@ -60,14 +60,14 @@ class ProfileViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
 
 
-class RepoLinkViewSet(viewsets.ModelViewSet):
+class ProfileLinkViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = RepoLink.objects.all()
-    serializer_class = RepoLinkSerializer
+    queryset = ProfileLink.objects.all()
+    serializer_class = ProfileLinkSerializer
 
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PUT'):
-            return RepoLinkSaveSerializer
+            return ProfileLinkSaveSerializer
 
         return self.serializer_class
 
@@ -190,17 +190,6 @@ class ProjectSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PUT'):
             return ProjectSaveSerializer
-        return self.serializer_class
-
-
-class ProjectAuthorSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = ProjectAuthor.objects.all()
-    serializer_class = ProjectAuthorSerializer
-
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT'):
-            return ProjectAuthorSaveSerializer
         return self.serializer_class
 
 

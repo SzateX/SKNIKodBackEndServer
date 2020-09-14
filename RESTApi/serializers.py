@@ -3,8 +3,8 @@ from allauth.account.utils import setup_user_email
 from django.contrib.auth.models import User, Group
 from rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
-from .models import Profile, RepoLink, Article, Comment, Tag, \
-    File, HardwareRental, Hardware, Project, ProjectAuthor, \
+from .models import Profile, ProfileLink, Article, Comment, Tag, \
+    File, HardwareRental, Hardware, Project, \
     Section, Gallery  # ArticleTag, ArticleAuthor
 
 from sorl_thumbnail_serializer.fields import HyperlinkedSorlImageField
@@ -66,7 +66,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('id', 'user', 'description')
+        fields = ('id', 'user', 'description', 'avatar', 'profile_links')
 
 
 class GallerySerializer(serializers.ModelSerializer):
@@ -82,38 +82,24 @@ class GallerySerializer(serializers.ModelSerializer):
         fields = ('id', 'article', 'image', 'thumbnail')
 
 
-class RepoLinkSerializer(serializers.ModelSerializer):
+class ProfileLinkSerializer(serializers.ModelSerializer):
     user = ProfileSerializer()
 
     class Meta:
-        model = RepoLink
-        fields = ('id', 'link', 'user')
+        model = ProfileLink
+        fields = ('id', 'link', 'user', 'link_type')
 
 
-class RepoLinkSaveSerializer(serializers.ModelSerializer):
+class ProfileLinkSaveSerializer(serializers.ModelSerializer):
     class Meta:
-        model = RepoLink
-        fields = ('id', 'link', 'user')
+        model = ProfileLink
+        fields = ('id', 'link', 'user', 'link_type')
 
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name')
-
-
-# class ArticleTagSerializer(serializers.ModelSerializer):
-#     tag = TagSerializer()
-#
-#     class Meta:
-#         model = ArticleTag
-#         fields = ('id', 'tag', 'article')
-
-
-# class ArticleTagSaveSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = ArticleTag
-#         fields = ('id', 'tag', 'article')
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -134,7 +120,6 @@ class CommentSaveSerializer(serializers.ModelSerializer):
 
 class ArticleSerializer(serializers.ModelSerializer):
     creator = ProfileSerializer()
-    # tags = ArticleTagSerializer(many=True)
     tags = TagSerializer(many=True)
     comments_number = serializers.SerializerMethodField()
     gallery = GallerySerializer(many=True)
@@ -229,18 +214,10 @@ class SectionSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description', 'isVisible', 'icon')
 
 
-class ProjectAuthorProjectDetailSerializes(serializers.ModelSerializer):
-    user = ProfileSerializer()
-
-    class Meta:
-        model = ProjectAuthor
-        fields = ('id', 'user')
-
-
 class ProjectSerializer(serializers.ModelSerializer):
     creator = ProfileSerializer()
     section = SectionSerializer()
-    project_authors = ProjectAuthorProjectDetailSerializes(many=True)
+    project_authors = ProfileSerializer(many=True)
 
     class Meta:
         model = Project
@@ -263,18 +240,3 @@ class ProjectAuthorProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
                   'repository_link', 'creator', 'section')
-
-
-class ProjectAuthorSerializer(serializers.ModelSerializer):
-    user = ProfileSerializer()
-    project = ProjectAuthorProjectSerializer()
-
-    class Meta:
-        model = ProjectAuthor
-        fields = ('id', 'user', 'project')
-
-
-class ProjectAuthorSaveSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectAuthor
-        fields = ('id', 'user', 'project')
