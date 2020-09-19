@@ -226,3 +226,4 @@ class ProjectSaveSerializer(serializers.ModelSerializer):
         model = Project
         fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
                   'repository_link', 'creator', 'section', 'authors', 'gallery')
+        extra_kwargs = {'gallery': {'required': False}}
