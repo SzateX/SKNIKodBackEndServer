@@ -213,7 +213,7 @@ class SectionSerializer(serializers.ModelSerializer):
 class RepoLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = RepoLink
-        fields = ('id', 'link', 'link_type', 'profile')
+        fields = ('id', 'link', 'link_type', 'project')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
