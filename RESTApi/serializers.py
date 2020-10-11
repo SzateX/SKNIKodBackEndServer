@@ -5,7 +5,7 @@ from rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from .models import Profile, ProfileLink, Article, Comment, Tag, \
     File, HardwareRental, Hardware, Project, \
-    Section, Gallery  # ArticleTag, ArticleAuthor
+    Section, Gallery, RepoLink  # ArticleTag, ArticleAuthor
 
 from sorl_thumbnail_serializer.fields import HyperlinkedSorlImageField
 
@@ -210,20 +210,30 @@ class SectionSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description', 'isVisible', 'icon')
 
 
+class RepoLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RepoLink
+        fields = ('id', 'link', 'link_type', 'profile')
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     creator = ProfileShortSerializer()
     section = SectionSerializer()
     authors = ProfileShortSerializer(many=True)
+    repository_links = RepoLinkSerializer(many=True)
 
     class Meta:
         model = Project
         fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
-                  'repository_link', 'creator', 'section', 'authors', 'gallery')
+                  'repository_links', 'creator', 'section', 'authors', 'gallery')
 
 
 class ProjectSaveSerializer(serializers.ModelSerializer):
+    repository_links = serializers.PrimaryKeyRelatedField(many=True, required=True, queryset=RepoLink.objects.all())
+    authors = serializers.PrimaryKeyRelatedField(many=True, required=True, queryset=Profile.objects.all())
+
     class Meta:
         model = Project
         fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
-                  'repository_link', 'creator', 'section', 'authors', 'gallery')
+                  'repository_links', 'creator', 'section', 'authors', 'gallery')
         extra_kwargs = {'gallery': {'required': False}}

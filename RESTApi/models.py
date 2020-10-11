@@ -130,7 +130,6 @@ class Project(models.Model):
     text = models.TextField()
     creation_date = models.DateTimeField()
     publication_date = models.DateTimeField(null=True)
-    repository_link = models.CharField(null=True, blank=True, max_length=100)
     creator = models.ForeignKey('Profile', on_delete=models.CASCADE,
                                 related_name='projects')
     section = models.ForeignKey('Section', on_delete=models.CASCADE,
@@ -139,6 +138,32 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class RepoLink(models.Model):
+    # Admin Owner
+    GITHUB = 'GITHUB'
+    GITLAB = 'GITLAB'
+    BITBUCKET = 'BITBUCKET'
+    BLOG = 'BLOG'
+    PORTFOLIO = 'PORTFOLIO'
+    OTHER = 'OTHER'
+    LINK_TYPES = [
+        (GITHUB, 'GITHUB'),
+        (GITLAB, 'GITLAB'),
+        (BITBUCKET, 'BITBUCKET'),
+        (BLOG, 'BLOG'),
+        (PORTFOLIO, 'PORTFOLIO'),
+        (OTHER, 'OTHER')
+    ]
+
+    link = models.URLField()
+    project = models.ForeignKey('Project', on_delete=models.CASCADE,
+                             related_name='repository_links')
+    link_type = models.CharField(choices=LINK_TYPES, max_length=100)
+
+    def __str__(self):
+        return "%s: %s" % (self.project, self.link)
 
 
 class Section(models.Model):
