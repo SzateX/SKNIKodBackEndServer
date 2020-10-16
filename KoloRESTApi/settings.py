@@ -186,7 +186,3 @@ REST_AUTH_SERIALIZERS = {
 REST_AUTH_REGISTER_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'RESTApi.serializers.RegisterWithFullNameSerializer'
 }
-
-CORS_ORIGIN_WHITELIST = (
-    '*',
-)
