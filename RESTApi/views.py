@@ -54,6 +54,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
+
 class GroupViewSetDetail(APIView):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
@@ -81,6 +82,7 @@ class GroupViewSetDetail(APIView):
         if serializer.is_valid():
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class GroupViewSetList(APIView):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
