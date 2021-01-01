@@ -71,5 +71,7 @@ urlpatterns = [
     url(r'^obtain-token/', TokenObtainPairView.as_view(),
         name='token_obtain_pair'),
     url(r'^verify-token/', TokenVerifyView.as_view(), name='token_verify'),
+    url(r'^groups2/$', views.GroupViewSetList.as_view(), name='group_list'),
+    url(r'^groups2/(?P<pk>\d+)/$', views.GroupViewSetDetail.as_view(), name='group_detail'),
     url(r'^docs$', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
