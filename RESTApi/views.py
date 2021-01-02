@@ -1,5 +1,6 @@
 import django_filters
 from django.contrib.auth.models import User, Group
+from django.http import Http404
 from django.views.generic import TemplateView
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
@@ -58,28 +59,35 @@ class GroupViewSet(viewsets.ModelViewSet):
 class GroupViewSetDetail(APIView):
     queryset = User.objects.none()
 
+    def get_object(self, pk=None):
+        try:
+            return Group.objects.get(pk=pk)
+        except Group.DoesNotExist:
+            raise Http404
+
     def get(self, request, pk=None, format=None):
-        queryset = Group.objects.get(pk=pk)
+        queryset = self.get_object(pk)
         serializer = GroupSerializer(queryset)
         return Response(serializer.data)
 
     def put(self, request, pk=None, format=None):
-        queryset = Group.objects.get(pk=pk)
-        serializer = GroupSerializer(queryset)
+        queryset = self.get_object(pk)
+        serializer = GroupSerializer(queryset, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk=None, format=None):
-        queryset = Group.objects.get(pk=pk)
+        queryset = self.get_object(pk)
         queryset.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def patch(self, request,  pk=None, format=None):
-        queryset = Group.objects.get(pk=pk)
+        queryset = self.get_object(pk)
         serializer = GroupSerializer(queryset, data=request.data, partial=True)
         if serializer.is_valid():
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -89,7 +97,6 @@ class GroupViewSetList(APIView):
 
     def get(self, format=None):
         queryset = Group.objects.all()
-        print(queryset)
         serializer = GroupSerializer(queryset, many=True)
         return Response(serializer.data)
 
