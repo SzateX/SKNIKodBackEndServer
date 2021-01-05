@@ -34,7 +34,6 @@ router = routers.DefaultRouter()
 router.register(r'profiles', views.ProfileViewSet)
 router.register(r'profile_links', views.ProfileViewSet)
 router.register(r'articles', views.ArticleViewSet)
-router.register(r'comments', views.CommentViewSet)
 router.register(r'tags', views.TagViewSet)
 router.register(r'file_set', views.FileSet)
 router.register(r'hardware_rentals', views.HardwareRentalSet)
@@ -73,5 +72,8 @@ urlpatterns = [
     url(r'^users/(?P<pk>\d+)/$', views.UserViewSetDetail.as_view(), name='user_detail'),
     url(r'^groups/$', views.GroupViewSetList.as_view(), name='group_list'),
     url(r'^groups/(?P<pk>\d+)/$', views.GroupViewSetDetail.as_view(), name='group_detail'),
+    url(r'^comments/$', views.CommentViewSetList.as_view(), name='comment_list'),
+    url(r'^comments/article/(?P<pk>\d+)/$', views.CommentViewSetArticleList.as_view(), name='commentArticle_list'),
+    url(r'^comments/(?P<pk>\d+)/$', views.CommentViewSetDetail.as_view(), name='comment_detail'),
     url(r'^docs$', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
