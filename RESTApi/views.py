@@ -321,14 +321,14 @@ class CommentViewSetDetail(APIView):
 class CommentViewSetList(APIView):
     queryset = Comment.objects.none()
 
-    def get_queryset(self):
+    def get_objects(self):
         article_id = self.request.query_params.get('article', None)
         if article_id is None:
             return Comment.objects.all().order_by('-creation_date')
         return Comment.objects.filter(article=article_id).order_by('-creation_date')
 
     def get(self, request, format=None):
-        queryset = self.get_queryset()
+        queryset = self.get_objects()
         serializer = CommentSerializer(queryset, many="True")
         return Response(serializer.data)
     
