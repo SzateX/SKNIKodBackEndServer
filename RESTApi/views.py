@@ -197,11 +197,47 @@ class ArticleViewSet(viewsets.ModelViewSet):
         return self.serializer_class
 
 
+class ArticleViewSetDetail(APIView):
+    queryset = Article.objects.none()
+
+    def get_object(self, pk):
+        try:
+            return Article.objects.get(pk=pk)
+        except:
+            raise Http404
+
+    def get(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = ArticleSerializer(queryset)
+        return Response(serializer.data)
+
+    def put(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = ArticleSaveSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = ArticleSaveSerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class ArticleViewSetList(APIView):
     queryset = Article.objects.none()
     pagination_class = LimitOffsetPagination
 
-    def get_queryset(self):
+    def get_objects(self):
         tag_id = self.request.query_params.get('tag', None)
         tag_name = self.request.query_params.get('tagname', None)
         author_id = self.request.query_params.get('author', None)
@@ -217,7 +253,7 @@ class ArticleViewSetList(APIView):
         return Article.objects.all().order_by('-publication_date')
 
     def get(self, request, format=None):
-        queryset = self.get_queryset()
+        queryset = self.get_objects()
         serializer = ArticleSerializer(queryset, many="True")
         return Response(serializer.data)
 

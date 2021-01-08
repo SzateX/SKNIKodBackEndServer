@@ -73,6 +73,7 @@ urlpatterns = [
     url(r'^groups/$', views.GroupViewSetList.as_view(), name='group_list'),
     url(r'^groups/(?P<pk>\d+)/$', views.GroupViewSetDetail.as_view(), name='group_detail'),
     url(r'^articles/$', views.ArticleViewSetList.as_view(), name='article_list'),
+    url(r'^articles/(?P<pk>\d+)/$', views.ArticleViewSetDetail.as_view(), name='article_list'),
     url(r'^comments/$', views.CommentViewSetList.as_view(), name='comment_list'),
     url(r'^comments/(?P<pk>\d+)/$', views.CommentViewSetDetail.as_view(), name='comment_detail'),
     url(r'^docs$', schema_view),
