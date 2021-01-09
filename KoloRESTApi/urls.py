@@ -76,5 +76,7 @@ urlpatterns = [
     url(r'^articles/(?P<pk>\d+)/$', views.ArticleViewSetDetail.as_view(), name='article_list'),
     url(r'^comments/$', views.CommentViewSetList.as_view(), name='comment_list'),
     url(r'^comments/(?P<pk>\d+)/$', views.CommentViewSetDetail.as_view(), name='comment_detail'),
+    url(r'^projects/$', views.ProjectSetList.as_view(), name='project_detail'),
+    url(r'^projects/(?P<pk>\d+)/$', views.ProjectSetDetail.as_view(), name='project_detail'),
     url(r'^docs$', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
