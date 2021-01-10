@@ -225,7 +225,12 @@ class ArticleViewSetList(APIView):
 
     def get(self, request, format=None):
         queryset = self.get_objects()
-        serializer = ArticleSerializer(queryset, many="True")
+        paginator = self.pagination_class()
+        result_page = paginator.paginate_queryset(queryset, request)
+        if result_page is not None:
+            serializer = ArticleSerializer(result_page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        serializer = ArticleSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -377,6 +382,11 @@ class ProjectSetList(APIView):
     
     def get(self, request, format=None):
         queryset = Project.objects.all()
+        paginator = self.pagination_class()
+        result_page = paginator.paginate_queryset(queryset, request)
+        if result_page is not None:
+            serializer = ProjectSerializer(result_page, many=True)
+            return paginator.get_paginated_response(serializer.data)
         serializer = ProjectSerializer(queryset, many=True)
         return Response(serializer.data)
     
