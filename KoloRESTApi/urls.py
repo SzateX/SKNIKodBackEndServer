@@ -31,8 +31,6 @@ from rest_framework_swagger.views import get_swagger_view
 from RESTApi import views
 
 router = routers.DefaultRouter()
-router.register(r'profiles', views.ProfileViewSet)
-router.register(r'profile_links', views.ProfileViewSet)
 router.register(r'articles', views.ArticleViewSet)
 router.register(r'comments', views.CommentViewSet)
 router.register(r'tags', views.TagViewSet)
@@ -69,9 +67,13 @@ urlpatterns = [
     url(r'^obtain-token/', TokenObtainPairView.as_view(),
         name='token_obtain_pair'),
     url(r'^verify-token/', TokenVerifyView.as_view(), name='token_verify'),
-    url(r'^users/$', views.UserViewSetList.as_view(), name='user_list'),
-    url(r'^users/(?P<pk>\d+)/$', views.UserViewSetDetail.as_view(), name='user_detail'),
-    url(r'^groups/$', views.GroupViewSetList.as_view(), name='group_list'),
-    url(r'^groups/(?P<pk>\d+)/$', views.GroupViewSetDetail.as_view(), name='group_detail'),
+    url(r'^api/users/$', views.UserViewSetList.as_view(), name='user_list'),
+    url(r'^api/users/(?P<pk>\d+)/$', views.UserViewSetDetail.as_view(), name='user_detail'),
+    url(r'^api/groups/$', views.GroupViewSetList.as_view(), name='group_list'),
+    url(r'^api/groups/(?P<pk>\d+)/$', views.GroupViewSetDetail.as_view(), name='group_detail'),
+    url(r'^api/profiles/$', views.ProfileViewSetList.as_view()),
+    url(r'^api/profiles/(?P<pk>\d+)/$', views.ProfileViewSetDetail.as_view()),
+    url(r'^api/profile_links/$', views.ProfileLinkViewSetList.as_view()),
+    url(r'^api/profile_links/(?P<pk>\d+)/$', views.ProfileLinkViewSetDetail.as_view()),
     url(r'^docs$', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
