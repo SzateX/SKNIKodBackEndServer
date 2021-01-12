@@ -314,6 +314,74 @@ class ArticleViewSet(viewsets.ModelViewSet):
         return self.serializer_class
 
 
+class ArticleViewSetDetail(APIView):
+    queryset = Article.objects.none()
+
+    def get_object(self, pk):
+        try:
+            return Article.objects.get(pk=pk)
+        except:
+            raise Http404
+
+    def get(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = ArticleSerializer(queryset)
+        return Response(serializer.data)
+
+    def put(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = ArticleSaveSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = ArticleSaveSerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ArticleViewSetList(APIView):
+    queryset = Article.objects.none()
+    pagination_class = LimitOffsetPagination
+
+    def get_objects(self):
+        tag_id = self.request.query_params.get('tag', None)
+        tag_name = self.request.query_params.get('tagname', None)
+        author_id = self.request.query_params.get('author', None)
+        author_name = self.request.query_params.get('authorname', None)
+        if tag_id is not None:
+            return Article.objects.filter(tags=tag_id).order_by('-publication_date')
+        if tag_name is not None:
+            return Article.objects.filter(tags__name=tag_name).order_by('-publication_date')
+        if author_id is not None:
+            return Article.objects.filter(authors=author_id).order_by('-publication_date')
+        if author_name is not None:
+            return Article.objects.filter(authors__user__username=author_name).order_by('-publication_date')
+        return Article.objects.all().order_by('-publication_date')
+
+    def get(self, request, format=None):
+        queryset = self.get_objects()
+        serializer = ArticleSerializer(queryset, many="True")
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = ArticleSaveSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
 class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Comment.objects.all().order_by('-creation_date')
@@ -329,6 +397,64 @@ class CommentViewSet(viewsets.ModelViewSet):
         if self.request.method in ('POST', 'PUT'):
             return CommentSaveSerializer
         return self.serializer_class
+
+
+class CommentViewSetDetail(APIView):
+    queryset = Comment.objects.none()
+
+    def get_object(self, pk):
+        try:
+            return Comment.objects.get(pk=pk)
+        except:
+            raise Http404
+
+    def get(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = CommentSerializer(queryset)
+        return Response(serializer.data)
+
+    def put(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = CommentSaveSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = CommentSaveSerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CommentViewSetList(APIView):
+    queryset = Comment.objects.none()
+
+    def get_objects(self):
+        article_id = self.request.query_params.get('article', None)
+        if article_id is None:
+            return Comment.objects.all().order_by('-creation_date')
+        return Comment.objects.filter(article=article_id).order_by('-creation_date')
+
+    def get(self, request, format=None):
+        queryset = self.get_objects()
+        serializer = CommentSerializer(queryset, many="True")
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        serializer = CommentSaveSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TagViewSet(viewsets.ModelViewSet):

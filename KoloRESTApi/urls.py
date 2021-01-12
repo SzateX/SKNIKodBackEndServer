@@ -32,7 +32,6 @@ from RESTApi import views
 
 router = routers.DefaultRouter()
 router.register(r'articles', views.ArticleViewSet)
-router.register(r'comments', views.CommentViewSet)
 router.register(r'tags', views.TagViewSet)
 router.register(r'file_set', views.FileSet)
 router.register(r'hardware_rentals', views.HardwareRentalSet)
@@ -75,5 +74,9 @@ urlpatterns = [
     url(r'^api/profiles/(?P<pk>\d+)/$', views.ProfileViewSetDetail.as_view()),
     url(r'^api/profile_links/$', views.ProfileLinkViewSetList.as_view()),
     url(r'^api/profile_links/(?P<pk>\d+)/$', views.ProfileLinkViewSetDetail.as_view()),
+    url(r'^articles/$', views.ArticleViewSetList.as_view(), name='article_list'),
+    url(r'^articles/(?P<pk>\d+)/$', views.ArticleViewSetDetail.as_view(), name='article_list'),
+    url(r'^comments/$', views.CommentViewSetList.as_view(), name='comment_list'),
+    url(r'^comments/(?P<pk>\d+)/$', views.CommentViewSetDetail.as_view(), name='comment_detail'),
     url(r'^docs$', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
