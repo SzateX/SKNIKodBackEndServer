@@ -88,15 +88,6 @@ class UserViewSetList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-
-
 class GroupViewSetDetail(APIView):
     queryset = User.objects.none()
 
@@ -147,13 +138,6 @@ class GroupViewSetList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ProfileViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
-    pagination_class = LimitOffsetPagination
 
 
 class ProfileViewSetDetail(APIView):
@@ -212,18 +196,6 @@ class ProfileViewSetList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ProfileLinkViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = ProfileLink.objects.all()
-    serializer_class = ProfileLinkSerializer
-
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT'):
-            return ProfileLinkSaveSerializer
-
-        return self.serializer_class
 
 
 class ProfileLinkViewSetDetail(APIView):
