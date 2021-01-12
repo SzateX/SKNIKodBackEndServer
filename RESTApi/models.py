@@ -88,6 +88,11 @@ class Comment(models.Model):
     user = models.ForeignKey('Profile', on_delete=models.CASCADE,
                              related_name='comments')
 
+    def save(self, *args, **kwargs):
+        if (self.article or self.project) and not (self.article and self.project):
+            raise Exception("U have to provide article id or project id")
+        super(Comment, self).save(*args, **kwargs)
+
     def __str__(self):
         return "%s: %s - %s" % (self.article.title, self.user, self.text[0:50] + "..." if len(self.text) > 50 else self.text)
 

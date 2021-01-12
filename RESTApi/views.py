@@ -283,37 +283,7 @@ class ProfileLinkViewSetList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-
-class ArticleViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = Article.objects.all().order_by('-publication_date')
-    serializer_class = ArticleSerializer
-    pagination_class = LimitOffsetPagination
-
-    def get_queryset(self):
-        tag_id = self.request.query_params.get('tag', None)
-        tag_name = self.request.query_params.get('tagname', None)
-        author_id = self.request.query_params.get('author', None)
-        author_name = self.request.query_params.get('authorname', None)
-        if tag_id is not None:
-            return Article.objects.filter(tags=tag_id).order_by(
-                '-publication_date')
-        if tag_name is not None:
-            return Article.objects.filter(tags__name=tag_name).order_by(
-                '-publication_date')
-        if author_id is not None:
-            return Article.objects.filter(authors=author_id).order_by('-publication_date')
-        if author_name is not None:
-            return Article.objects.filter(authors__user__username=author_name).order_by('-publication_date')
-        return Article.objects.all().order_by('-publication_date')
-
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT', 'PATCH'):
-            return ArticleSaveSerializer
-        return self.serializer_class
-
-
+      
 class ArticleViewSetDetail(APIView):
     queryset = Article.objects.none()
 
@@ -371,7 +341,12 @@ class ArticleViewSetList(APIView):
 
     def get(self, request, format=None):
         queryset = self.get_objects()
-        serializer = ArticleSerializer(queryset, many="True")
+        paginator = self.pagination_class()
+        result_page = paginator.paginate_queryset(queryset, request)
+        if result_page is not None:
+            serializer = ArticleSerializer(result_page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        serializer = ArticleSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -380,23 +355,6 @@ class ArticleViewSetList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-
-class CommentViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = Comment.objects.all().order_by('-creation_date')
-    serializer_class = CommentSerializer
-
-    def get_queryset(self):
-        article_id = self.request.query_params.get('article', None)
-        if article_id is None:
-            return Comment.objects.all()
-        return Comment.objects.filter(article=article_id)
-
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT'):
-            return CommentSaveSerializer
-        return self.serializer_class
 
 
 class CommentViewSetDetail(APIView):
@@ -498,16 +456,62 @@ class HardwareSet(viewsets.ModelViewSet):
         return self.serializer_class
 
 
-class ProjectSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializer
-    pagination_class = LimitOffsetPagination
+class ProjectSetDetail(APIView):
+    queryset = Comment.objects.none()
 
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT'):
-            return ProjectSaveSerializer
-        return self.serializer_class
+    def get_object(self, pk):
+        try:
+            return Project.objects.get(pk=pk)
+        except:
+            raise Http404
+
+    def get(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = ProjectSerializer(queryset)
+        return Response(serializer.data)
+
+    def put(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = ProjectSaveSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = ProjectSaveSerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProjectSetList(APIView):
+    queryset = User.objects.none()
+    pagination_class = LimitOffsetPagination
+    
+    def get(self, request, format=None):
+        queryset = Project.objects.all()
+        paginator = self.pagination_class()
+        result_page = paginator.paginate_queryset(queryset, request)
+        if result_page is not None:
+            serializer = ProjectSerializer(result_page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        serializer = ProjectSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        serializer = ProjectSaveSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SectionSet(viewsets.ModelViewSet):

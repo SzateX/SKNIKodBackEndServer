@@ -31,12 +31,10 @@ from rest_framework_swagger.views import get_swagger_view
 from RESTApi import views
 
 router = routers.DefaultRouter()
-router.register(r'articles', views.ArticleViewSet)
 router.register(r'tags', views.TagViewSet)
 router.register(r'file_set', views.FileSet)
 router.register(r'hardware_rentals', views.HardwareRentalSet)
 router.register(r'hardwares', views.HardwareSet)
-router.register(r'project', views.ProjectSet)
 router.register(r'section', views.SectionSet)
 router.register(r'gallery', views.GallerySet)
 
@@ -70,13 +68,15 @@ urlpatterns = [
     url(r'^api/users/(?P<pk>\d+)/$', views.UserViewSetDetail.as_view(), name='user_detail'),
     url(r'^api/groups/$', views.GroupViewSetList.as_view(), name='group_list'),
     url(r'^api/groups/(?P<pk>\d+)/$', views.GroupViewSetDetail.as_view(), name='group_detail'),
+    url(r'^api/articles/$', views.ArticleViewSetList.as_view(), name='article_list'),
+    url(r'^api/articles/(?P<pk>\d+)/$', views.ArticleViewSetDetail.as_view(), name='article_list'),
+    url(r'^api/comments/$', views.CommentViewSetList.as_view(), name='comment_list'),
+    url(r'^api/comments/(?P<pk>\d+)/$', views.CommentViewSetDetail.as_view(), name='comment_detail'),
+    url(r'^api/projects/$', views.ProjectSetList.as_view(), name='project_detail'),
+    url(r'^api/projects/(?P<pk>\d+)/$', views.ProjectSetDetail.as_view(), name='project_detail'),
     url(r'^api/profiles/$', views.ProfileViewSetList.as_view()),
     url(r'^api/profiles/(?P<pk>\d+)/$', views.ProfileViewSetDetail.as_view()),
     url(r'^api/profile_links/$', views.ProfileLinkViewSetList.as_view()),
     url(r'^api/profile_links/(?P<pk>\d+)/$', views.ProfileLinkViewSetDetail.as_view()),
-    url(r'^articles/$', views.ArticleViewSetList.as_view(), name='article_list'),
-    url(r'^articles/(?P<pk>\d+)/$', views.ArticleViewSetDetail.as_view(), name='article_list'),
-    url(r'^comments/$', views.CommentViewSetList.as_view(), name='comment_list'),
-    url(r'^comments/(?P<pk>\d+)/$', views.CommentViewSetDetail.as_view(), name='comment_detail'),
     url(r'^docs$', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
