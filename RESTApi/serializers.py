@@ -234,7 +234,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class ProjectSaveSerializer(serializers.ModelSerializer):
     repository_links = serializers.PrimaryKeyRelatedField(many=True, required=True, queryset=RepoLink.objects.all())
-    authors = serializers.PrimaryKeyRelatedField(many=True, required=True, queryset=Profile.objects.all())
+    authors = serializers.PrimaryKeyRelatedField(many=True, required=True, queryset=User.objects.all())
 
     class Meta:
         model = Project
