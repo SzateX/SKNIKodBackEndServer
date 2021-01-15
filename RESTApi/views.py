@@ -387,22 +387,108 @@ class CommentViewSetList(APIView):
         else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class TagViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+class TagViewSetDetail(APIView):
+    queryset = Tag.objects.none()
 
-    queryset = Tag.objects.all()
-    serializer_class = TagSerializer
+    def get_object(self, pk):
+        try:
+            return Tag.objects.get(pk=pk)
+        except Tag.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = TagSerializer(queryset)
+        return Response(serializer.data)
+        
+    def put(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = TagSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request,  pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = TagSerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class FileSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
+class TagViewSetList(APIView):
+    queryset = Tag.objects.none()
 
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT'):
-            return FileSaveSerializer
-        return self.serializer_class
+    def get(self, format=None):
+        queryset = Tag.objects.all()
+        serializer = TagSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = TagSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class FileViewSetDetail(APIView):
+    queryset = File.objects.none()
+
+    def get_object(self, pk):
+        try:
+            return File.objects.get(pk=pk)
+        except File.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = FileSerializer(queryset)
+        return Response(serializer.data)
+        
+    def put(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = FileSaveSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request,  pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = FileSaveSerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class FileViewSetList(APIView):
+    queryset = File.objects.none()
+    
+    def get(self, format=None):
+        queryset = File.objects.all()
+        serializer = FileSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        serializer = FileSaveSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class HardwareRentalSet(viewsets.ModelViewSet):
@@ -492,13 +578,59 @@ class SectionSet(viewsets.ModelViewSet):
     serializer_class = SectionSerializer
 
 
-class GallerySet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = Gallery.objects.all()
-    serializer_class = GallerySerializer
+class GalleryViewSetDetail(APIView):
+    queryset = Gallery.objects.none()
 
-    def get_queryset(self):
+    def get_object(self, pk):
+        try:
+            return Gallery.objects.get(pk=pk)
+        except:
+            raise Http404
+
+    def get(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = GallerySerializer(queryset)
+        return Response(serializer.data)
+
+    def put(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = GallerySerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request,  pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = GallerySerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GalleryViewSetList(APIView):
+    queryset = Gallery.objects.none()
+
+    def get_objects(self):
         article_id = self.request.query_params.get('article', None)
         if article_id is None:
             return Gallery.objects.all()
         return Gallery.objects.filter(article=article_id)
+
+    def get(self, request, format=None):
+        queryset = self.get_objects()
+        serializer = GallerySerializer(queryset, many="True")
+        return Response(serializer.data)
+        
+    def post(self, request, format=None):
+        serializer = GallerySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
