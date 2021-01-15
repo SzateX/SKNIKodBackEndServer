@@ -46,10 +46,18 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class ProfileWithoutUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('id', 'description', 'profile_links')
+
+
 class ShortUserSerializer(serializers.ModelSerializer):
+    profile = ProfileWithoutUserSerializer()
+    
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'profile')
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
@@ -80,14 +88,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'description', 'avatar', 'profile_links')
 
 
-class ProfileShortSerializer(serializers.ModelSerializer):
-    user = ShortUserSerializer(read_only=True)
-
-    class Meta:
-        model = Profile
-        fields = ('id', 'user', 'description', 'profile_links')
-
-
 class GallerySerializer(serializers.ModelSerializer):
     thumbnail = HyperlinkedSorlImageField(
         '512x512',
@@ -114,7 +114,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = ProfileShortSerializer()
+    user = ShortUserSerializer()
 
     class Meta:
         model = Comment
@@ -134,11 +134,11 @@ class CommentSaveSerializer(serializers.ModelSerializer):
 
 
 class ArticleSerializer(serializers.ModelSerializer):
-    creator = ProfileShortSerializer()
+    creator = ShortUserSerializer()
     tags = TagSerializer(many=True)
     comments_number = serializers.SerializerMethodField()
     gallery = GallerySerializer(many=True)
-    authors = ProfileShortSerializer(many=True)
+    authors = ShortUserSerializer(many=True)
 
     class Meta:
         model = Article
@@ -194,7 +194,7 @@ class HardwareSaveSerializer(serializers.ModelSerializer):
 
 
 class HardwareRentalSerializer(serializers.ModelSerializer):
-    user = ProfileShortSerializer()
+    user = ShortUserSerializer()
     hardware = HardwareSerializer()
 
     class Meta:
@@ -221,9 +221,9 @@ class RepoLinkSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    creator = ProfileShortSerializer()
+    creator = ShortUserSerializer()
     section = SectionSerializer()
-    authors = ProfileShortSerializer(many=True)
+    authors = ShortUserSerializer(many=True)
     repository_links = RepoLinkSerializer(many=True)
 
     class Meta:
