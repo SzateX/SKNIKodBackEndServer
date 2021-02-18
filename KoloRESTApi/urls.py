@@ -31,9 +31,6 @@ from rest_framework_swagger.views import get_swagger_view
 from RESTApi import views
 
 router = routers.DefaultRouter()
-router.register(r'hardware_rentals', views.HardwareRentalSet)
-router.register(r'hardwares', views.HardwareSet)
-router.register(r'section', views.SectionSet)
 
 schema_view = get_swagger_view(title='SKNI KOD Website API')
 
@@ -73,13 +70,19 @@ urlpatterns = [
     url(r'^api/tags/(?P<pk>\d+)/$', views.TagViewSetDetail.as_view(), name='tag_detail'),
     url(r'^api/files/$', views.FileViewSetList.as_view(), name='file_list'),
     url(r'^api/files/(?P<pk>\d+)/$', views.FileViewSetDetail.as_view(), name='file_detail'),
+    url(r'^api/galery/$', views.GalleryViewSetList.as_view(), name='gallery_detail'),
+    url(r'^api/galery/(?P<pk>\d+)/$', views.GalleryViewSetDetail.as_view(), name='gallery_detail'),
+    url(r'^api/hardware_rentals/$', views.HardwareRentalViewSetList.as_view(), name='hardware_rental_list'),
+    url(r'^api/hardware_rentals/(?P<pk>\d+)/$', views.HardwareRentalViewSetDetail.as_view(), name='hardware_rental_detail'),
+    url(r'^api/hardwares/$', views.HardwareViewSetList.as_view(), name='hardware_list'),
+    url(r'^api/hardwares/(?P<pk>\d+)/$', views.HardwareViewSetDetail.as_view(), name='hardware_detail'),
+    url(r'^api/section/$', views.SectionViewSetList.as_view(), name='section_list'),
+    url(r'^api/section/(?P<pk>\d+)/$', views.SectionViewSetDetail.as_view(), name='section_detail'), 
     url(r'^api/projects/$', views.ProjectSetList.as_view(), name='project_detail'),
     url(r'^api/projects/(?P<pk>\d+)/$', views.ProjectSetDetail.as_view(), name='project_detail'),
     url(r'^api/profiles/$', views.ProfileViewSetList.as_view(), name='profiles_detail'),
     url(r'^api/profiles/(?P<pk>\d+)/$', views.ProfileViewSetDetail.as_view(), name='profiles_detail'),
     url(r'^api/profile_links/$', views.ProfileLinkViewSetList.as_view(), name='profile_link_detail'),
     url(r'^api/profile_links/(?P<pk>\d+)/$', views.ProfileLinkViewSetDetail.as_view(), name='profile_link_detail'),
-    url(r'^api/galeries/$', views.GalleryViewSetList.as_view(), name='gallery_detail'),
-    url(r'^api/galeries/(?P<pk>\d+)/$', views.GalleryViewSetDetail.as_view(), name='gallery_detail'),
     url(r'^docs$', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
