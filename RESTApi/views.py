@@ -416,6 +416,58 @@ class HardwareRentalSet(viewsets.ModelViewSet):
         return self.serializer_class
 
 
+class HardwareRentalViewSetDetail(APIView):
+    queryset = HardwareRental.objects.none()
+
+    def get_object(self, pk=None):
+        try:
+            return HardwareRental.objects.get(pk=pk)
+        except HardwareRental.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk=None, format=None):
+        queryset = self.get_object(pk=pk)
+        serializer = HardwareRentalSerializer(queryset)
+        return Response(serializer.data)
+
+    def put(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = HardwareRentalSaveSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = HardwareRentalSerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class HardwareRentalViewSetList(APIView):
+    queryset = HardwareRental.objects.none()
+
+    def get(self, format=None):
+        queryset = HardwareRental.objects.all()
+        serializer = HardwareRentalSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = HardwareRentalSaveSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class HardwareSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Hardware.objects.all()
@@ -428,7 +480,65 @@ class HardwareSet(viewsets.ModelViewSet):
         return self.serializer_class
 
 
-class ProjectSetDetail(APIView):
+class HardwareViewSetDetail(APIView):
+    queryset = Hardware.objects.none()
+
+    def get_object(self, pk=None):
+        try:
+            return Hardware.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk=None, format=None):
+        queryset = self.get_object(pk=pk)
+        serializer = HardwareSerializer(queryset)
+        return Response(serializer.data)
+
+    def put(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = HardwareSaveSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = HardwareSerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class HardwareViewSetList(APIView):
+    queryset = Hardware.objects.none()
+    pagination_class = LimitOffsetPagination
+
+    def get(self, request, format=None):
+        queryset = Hardware.objects.all()
+        paginator = self.pagination_class()
+        result_page = paginator.paginate_queryset(queryset, request)
+        if result_page is not None:
+            serializer = HardwareSerializer(result_page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        serializer = HardwareSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = HardwareSaveSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProjectViewSetDetail(APIView):
     queryset = Comment.objects.none()
 
     def get_object(self, pk):
@@ -464,7 +574,7 @@ class ProjectSetDetail(APIView):
         else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProjectSetList(APIView):
+class ProjectViewSetList(APIView):
     queryset = User.objects.none()
     pagination_class = LimitOffsetPagination
     
@@ -490,6 +600,58 @@ class SectionSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
+
+
+class SectionViewSetDetail(APIView):
+    queryset = Section.objects.none()
+
+    def get_object(self, pk=None):
+        try:
+            return Section.objects.get(pk=pk)
+        except Section.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk=None, format=None):
+        queryset = self.get_object(pk=pk)
+        serializer = SectionSerializer(queryset)
+        return Response(serializer.data)
+
+    def put(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = SectionSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = SectionSerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SectionViewSetList(APIView):
+    queryset = Section.objects.none()
+
+    def get(self, format=None):
+        queryset = Section.objects.all()
+        serializer = SectionSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = SectionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GallerySet(viewsets.ModelViewSet):

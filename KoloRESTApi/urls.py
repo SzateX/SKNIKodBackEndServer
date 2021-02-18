@@ -33,9 +33,6 @@ from RESTApi import views
 router = routers.DefaultRouter()
 router.register(r'tags', views.TagViewSet)
 router.register(r'file_set', views.FileSet)
-router.register(r'hardware_rentals', views.HardwareRentalSet)
-router.register(r'hardwares', views.HardwareSet)
-router.register(r'section', views.SectionSet)
 router.register(r'gallery', views.GallerySet)
 
 schema_view = get_swagger_view(title='SKNI KOD Website API')
@@ -72,11 +69,15 @@ urlpatterns = [
     url(r'^api/articles/(?P<pk>\d+)/$', views.ArticleViewSetDetail.as_view(), name='article_list'),
     url(r'^api/comments/$', views.CommentViewSetList.as_view(), name='comment_list'),
     url(r'^api/comments/(?P<pk>\d+)/$', views.CommentViewSetDetail.as_view(), name='comment_detail'),
-    url(r'^api/projects/$', views.ProjectSetList.as_view(), name='project_detail'),
-    url(r'^api/projects/(?P<pk>\d+)/$', views.ProjectSetDetail.as_view(), name='project_detail'),
-    url(r'^api/profiles/$', views.ProfileViewSetList.as_view()),
-    url(r'^api/profiles/(?P<pk>\d+)/$', views.ProfileViewSetDetail.as_view()),
-    url(r'^api/profile_links/$', views.ProfileLinkViewSetList.as_view()),
-    url(r'^api/profile_links/(?P<pk>\d+)/$', views.ProfileLinkViewSetDetail.as_view()),
+    url(r'^api/projects/$', views.ProjectViewSetList.as_view(), name='project_detail'),
+    url(r'^api/projects/(?P<pk>\d+)/$', views.ProjectViewSetDetail.as_view(), name='project_detail'),
+    url(r'^api/profiles/$', views.ProfileViewSetList.as_view(), name='profile_list'),
+    url(r'^api/profiles/(?P<pk>\d+)/$', views.ProfileViewSetDetail.as_view(), name='profile_detail'),
+    url(r'^api/hardware_rentals/$', views.HardwareRentalViewSetList.as_view(), name='hardware_rental_list'),
+    url(r'^api/hardware_rentals/(?P<pk>\d+)/$', views.HardwareRentalViewSetDetail.as_view(), name='hardware_rental_detail'),
+    url(r'^api/hardwares/$', views.HardwareViewSetList.as_view(), name='hardware_list'),
+    url(r'^api/hardwares/(?P<pk>\d+)/$', views.HardwareViewSetDetail.as_view(), name='hardware_detail'),
+    url(r'^api/section/$', views.SectionViewSetList.as_view(), name='section_list'),
+    url(r'^api/section/(?P<pk>\d+)/$', views.SectionViewSetDetail.as_view(), name='section_detail'),
     url(r'^docs$', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
