@@ -3,4 +3,7 @@ branches:
   - label: refactor
     name: develop
     prefix: refactor/
+  - label: enhancement
+    name: develop
+    prefix enhancement/
 openDraftPR: true
