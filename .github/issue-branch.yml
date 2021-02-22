@@ -5,5 +5,5 @@ branches:
     prefix: refactor/
   - label: enhancement
     name: develop
-    prefix enhancement/
+    prefix: enhancement/
 openDraftPR: true
