@@ -90,6 +90,8 @@ class Comment(models.Model):
 
     def save(self, *args, **kwargs):
         if (self.article or self.project) and not (self.article and self.project):
+            pass
+        else:
             raise Exception("U have to provide article id or project id")
         super(Comment, self).save(*args, **kwargs)
 

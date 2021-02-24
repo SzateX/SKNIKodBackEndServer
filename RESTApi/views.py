@@ -89,7 +89,7 @@ class UserViewSetList(APIView):
 
 
 class GroupViewSetDetail(APIView):
-    queryset = User.objects.none()
+    queryset = Group.objects.none()
 
     def get_object(self, pk=None):
         try:
@@ -625,7 +625,7 @@ class HardwareViewSetList(APIView):
 
 
 class ProjectViewSetDetail(APIView):
-    queryset = Comment.objects.none()
+    queryset = Project.objects.none()
 
     def get_object(self, pk):
         try:
