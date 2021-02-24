@@ -370,9 +370,9 @@ class CommentViewSetList(APIView):
 
     def get_objects(self):
         article_id = self.request.query_params.get('article', None)
-        if article_id is None:
-            return Comment.objects.all().order_by('-creation_date')
-        return Comment.objects.filter(article=article_id).order_by('-creation_date')
+        if article_id is not None:
+            return Comment.objects.filter(article=article_id).order_by('-creation_date')
+        else: return Comment.objects.all().order_by('-creation_date')
 
     def get(self, request, format=None):
         queryset = self.get_objects()
