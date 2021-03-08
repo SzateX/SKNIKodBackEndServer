@@ -85,4 +85,6 @@ urlpatterns = [
     url(r'^api/profile_links/$', views.ProfileLinkViewSetList.as_view(), name='profile_link_detail'),
     url(r'^api/profile_links/(?P<pk>\d+)/$', views.ProfileLinkViewSetDetail.as_view(), name='profile_link_detail'),
     url(r'^docs$', schema_view),
+    url(r'hardware/download', views.GlejtHardwareDownloadPDF.as_view()),
+    url(r'hardware/view', views.GlejtHardwareViewPDF.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

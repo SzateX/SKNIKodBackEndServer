@@ -125,6 +125,7 @@ class Hardware(models.Model):
     name = models.TextField()
     description = models.TextField()
     serial_number = models.TextField()
+    rental_status = models.TextField(default=None)
 
     def __str__(self):
         return self.name

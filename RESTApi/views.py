@@ -1,6 +1,10 @@
+from io import BytesIO
+
 import django_filters
 from django.contrib.auth.models import User, Group
-from django.http import Http404
+from django.http import Http404, HttpResponse
+from django.template.loader import get_template
+from django.views import View
 from django.views.generic import TemplateView
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import Http404
@@ -9,6 +13,7 @@ from rest_framework import viewsets, status
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from xhtml2pdf import pisa
 
 from .models import *
 from RESTApi.serializers import *
@@ -789,3 +794,30 @@ class GalleryViewSetList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def render_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None
+
+
+class GlejtHardwareViewPDF(View):
+
+    def get(self, request, *args, **kwargs):
+        pdf = render_to_pdf('glejt.html', request.GET)
+        return HttpResponse(pdf, content_type='application/pdf')
+
+
+class GlejtHardwareDownloadPDF(View):
+
+    def get(self, request, *args, **kwargs):
+        pdf = render_to_pdf('glejt.html', request.GET)
+        response = HttpResponse(pdf, content_type='application/pdf')
+        filename = "Hardware.pdf"
+        content = f"attachment; filename={filename}"
+        response['Content-Disposition'] = content
+        return response

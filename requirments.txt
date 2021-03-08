@@ -38,3 +38,5 @@ urllib3==1.24.1
 pillow
 sorl-thumbnail
 sorl-thumbnail-serializer-field
+xhtml2pdf~=0.2.5
+setuptools~=51.1.0
