@@ -46,18 +46,10 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-class ProfileWithoutUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
-        fields = ('id', 'description', 'profile_links')
-
-
 class ShortUserSerializer(serializers.ModelSerializer):
-    profile = ProfileWithoutUserSerializer()
-    
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'profile')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name')
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
@@ -88,6 +80,14 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'description', 'avatar', 'profile_links')
 
 
+class ProfileShortSerializer(serializers.ModelSerializer):
+    user = ShortUserSerializer(read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ('id', 'user', 'description', 'profile_links')
+
+
 class GallerySerializer(serializers.ModelSerializer):
     thumbnail = HyperlinkedSorlImageField(
         '512x512',
@@ -113,12 +113,28 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    user = ProfileShortSerializer()
+
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'creation_date', 'article_id', 'user')
+        depth = 2
+
+
+class CommentSaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'creation_date', 'article_id', 'user')
+        depth = 2
+
+
 class ArticleSerializer(serializers.ModelSerializer):
-    creator = ShortUserSerializer()
+    creator = ProfileShortSerializer()
     tags = TagSerializer(many=True)
     comments_number = serializers.SerializerMethodField()
     gallery = GallerySerializer(many=True)
-    authors = ShortUserSerializer(many=True)
+    authors = ProfileShortSerializer(many=True)
 
     class Meta:
         model = Article
@@ -174,7 +190,7 @@ class HardwareSaveSerializer(serializers.ModelSerializer):
 
 
 class HardwareRentalSerializer(serializers.ModelSerializer):
-    user = ShortUserSerializer()
+    user = ProfileShortSerializer()
     hardware = HardwareSerializer()
 
     class Meta:
@@ -201,9 +217,9 @@ class RepoLinkSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    creator = ShortUserSerializer()
+    creator = ProfileShortSerializer()
     section = SectionSerializer()
-    authors = ShortUserSerializer(many=True)
+    authors = ProfileShortSerializer(many=True)
     repository_links = RepoLinkSerializer(many=True)
 
     class Meta:
@@ -214,33 +230,10 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class ProjectSaveSerializer(serializers.ModelSerializer):
     repository_links = serializers.PrimaryKeyRelatedField(many=True, required=True, queryset=RepoLink.objects.all())
-    authors = serializers.PrimaryKeyRelatedField(many=True, required=True, queryset=User.objects.all())
+    authors = serializers.PrimaryKeyRelatedField(many=True, required=True, queryset=Profile.objects.all())
 
     class Meta:
         model = Project
         fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
                   'repository_links', 'creator', 'section', 'authors', 'gallery')
         extra_kwargs = {'gallery': {'required': False}}
-
-
-class CommentSerializer(serializers.ModelSerializer):
-    user = ShortUserSerializer()
-    article = ArticleSerializer()
-    project = ProjectSerializer()
-
-    class Meta:
-        model = Comment
-        fields = ('id', 'text', 'creation_date', 'article', 'project', 'user')
-        depth = 2
-
-
-class CommentSaveSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ('id', 'text', 'creation_date', 'article', 'project', 'user')
-    
-    def validation(self, data):
-        if ('article' in data or 'project' in data) and not ('article' in data and 'project' in data):
-            pass
-        else:
-            raise serializers.ValidationError("U have to provide article id or project id")
