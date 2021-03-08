@@ -31,6 +31,17 @@ from rest_framework_swagger.views import get_swagger_view
 from RESTApi import views
 
 router = routers.DefaultRouter()
+router.register(r'profiles', views.ProfileViewSet)
+router.register(r'profile_links', views.ProfileViewSet)
+router.register(r'articles', views.ArticleViewSet)
+router.register(r'comments', views.CommentViewSet)
+router.register(r'tags', views.TagViewSet)
+router.register(r'file_set', views.FileSet)
+router.register(r'hardware_rentals', views.HardwareRentalSet)
+router.register(r'hardwares', views.HardwareSet)
+router.register(r'project', views.ProjectSet)
+router.register(r'section', views.SectionSet)
+router.register(r'gallery', views.GallerySet)
 
 schema_view = get_swagger_view(title='SKNI KOD Website API')
 
@@ -58,31 +69,9 @@ urlpatterns = [
     url(r'^obtain-token/', TokenObtainPairView.as_view(),
         name='token_obtain_pair'),
     url(r'^verify-token/', TokenVerifyView.as_view(), name='token_verify'),
-    url(r'^api/users/$', views.UserViewSetList.as_view(), name='user_list'),
-    url(r'^api/users/(?P<pk>\d+)/$', views.UserViewSetDetail.as_view(), name='user_detail'),
-    url(r'^api/groups/$', views.GroupViewSetList.as_view(), name='group_list'),
-    url(r'^api/groups/(?P<pk>\d+)/$', views.GroupViewSetDetail.as_view(), name='group_detail'),
-    url(r'^api/articles/$', views.ArticleViewSetList.as_view(), name='article_list'),
-    url(r'^api/articles/(?P<pk>\d+)/$', views.ArticleViewSetDetail.as_view(), name='article_list'),
-    url(r'^api/comments/$', views.CommentViewSetList.as_view(), name='comment_list'),
-    url(r'^api/comments/(?P<pk>\d+)/$', views.CommentViewSetDetail.as_view(), name='comment_detail'),
-    url(r'^api/tags/$', views.TagViewSetList.as_view(), name='tag_list'),
-    url(r'^api/tags/(?P<pk>\d+)/$', views.TagViewSetDetail.as_view(), name='tag_detail'),
-    url(r'^api/files/$', views.FileViewSetList.as_view(), name='file_list'),
-    url(r'^api/files/(?P<pk>\d+)/$', views.FileViewSetDetail.as_view(), name='file_detail'),
-    url(r'^api/galery/$', views.GalleryViewSetList.as_view(), name='gallery_detail'),
-    url(r'^api/galery/(?P<pk>\d+)/$', views.GalleryViewSetDetail.as_view(), name='gallery_detail'),
-    url(r'^api/hardware_rentals/$', views.HardwareRentalViewSetList.as_view(), name='hardware_rental_list'),
-    url(r'^api/hardware_rentals/(?P<pk>\d+)/$', views.HardwareRentalViewSetDetail.as_view(), name='hardware_rental_detail'),
-    url(r'^api/hardwares/$', views.HardwareViewSetList.as_view(), name='hardware_list'),
-    url(r'^api/hardwares/(?P<pk>\d+)/$', views.HardwareViewSetDetail.as_view(), name='hardware_detail'),
-    url(r'^api/section/$', views.SectionViewSetList.as_view(), name='section_list'),
-    url(r'^api/section/(?P<pk>\d+)/$', views.SectionViewSetDetail.as_view(), name='section_detail'), 
-    url(r'^api/projects/$', views.ProjectViewSetList.as_view(), name='project_detail'),
-    url(r'^api/projects/(?P<pk>\d+)/$', views.ProjectViewSetDetail.as_view(), name='project_detail'),
-    url(r'^api/profiles/$', views.ProfileViewSetList.as_view(), name='profiles_detail'),
-    url(r'^api/profiles/(?P<pk>\d+)/$', views.ProfileViewSetDetail.as_view(), name='profiles_detail'),
-    url(r'^api/profile_links/$', views.ProfileLinkViewSetList.as_view(), name='profile_link_detail'),
-    url(r'^api/profile_links/(?P<pk>\d+)/$', views.ProfileLinkViewSetDetail.as_view(), name='profile_link_detail'),
+    url(r'^users/$', views.UserViewSetList.as_view(), name='user_list'),
+    url(r'^users/(?P<pk>\d+)/$', views.UserViewSetDetail.as_view(), name='user_detail'),
+    url(r'^groups/$', views.GroupViewSetList.as_view(), name='group_list'),
+    url(r'^groups/(?P<pk>\d+)/$', views.GroupViewSetDetail.as_view(), name='group_detail'),
     url(r'^docs$', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
