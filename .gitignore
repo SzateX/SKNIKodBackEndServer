@@ -110,3 +110,6 @@ RESTApi/migrations/*
 REstApi/migrations/__init__.py
 RESTApi/migrations/0001_initial.py
 /mediafolder/
+
+# Visual Studio settings
+.vs/

@@ -113,26 +113,6 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-class CommentSerializer(serializers.ModelSerializer):
-    user = ShortUserSerializer()
-
-    class Meta:
-        model = Comment
-        fields = ('id', 'text', 'creation_date', 'article_id', 'project_id', 'user')
-        depth = 2
-
-
-class CommentSaveSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ('id', 'text', 'creation_date', 'article_id', 'project_id', 'user')
-    
-    def validate(self, data):
-        if ('article_id' in data or 'project_id' in data) and not ('article_id' in data and 'project_id' in data):
-            raise serializers.ValidationError("U have to provide article id or project id")
-        super(CommentSaveSerializer, self).validate(data)
-
-
 class ArticleSerializer(serializers.ModelSerializer):
     creator = ShortUserSerializer()
     tags = TagSerializer(many=True)
@@ -241,3 +221,26 @@ class ProjectSaveSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
                   'repository_links', 'creator', 'section', 'authors', 'gallery')
         extra_kwargs = {'gallery': {'required': False}}
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    user = ShortUserSerializer()
+    article = ArticleSerializer()
+    project = ProjectSerializer()
+
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'creation_date', 'article', 'project', 'user')
+        depth = 2
+
+
+class CommentSaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'creation_date', 'article', 'project', 'user')
+    
+    def validation(self, data):
+        if ('article' in data or 'project' in data) and not ('article' in data and 'project' in data):
+            pass
+        else:
+            raise serializers.ValidationError("U have to provide article id or project id")

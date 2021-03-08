@@ -9,10 +9,11 @@ from rest_framework import viewsets, status
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import *
 
 from .models import *
+from RESTApi.custom_permissions import *
 from RESTApi.serializers import *
-
 from rest_framework import permissions
 
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
@@ -38,6 +39,7 @@ class IndexTemplateView(TemplateView):
 
 class UserViewSetDetail(APIView):
     queryset = User.objects.none()
+    permission_classes = [IsOwnerOrAdminForUserViewOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -47,11 +49,13 @@ class UserViewSetDetail(APIView):
 
     def get(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
+        self.check_object_permissions(self.request, queryset)
         serializer = UserSerializer(queryset)
         return Response(serializer.data)
 
     def put(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
+        self.check_object_permissions(self.request, queryset)
         serializer = UserUpdateSerializer(queryset, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -60,11 +64,13 @@ class UserViewSetDetail(APIView):
 
     def delete(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
+        self.check_object_permissions(self.request, queryset)
         queryset.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def patch(self, request,  pk=None, format=None):
         queryset = self.get_object(pk)
+        self.check_object_permissions(self.request, queryset)
         serializer = UserUpdateSerializer(queryset, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -74,6 +80,7 @@ class UserViewSetDetail(APIView):
 
 class UserViewSetList(APIView):
     queryset = User.objects.none()
+    permission_classes = [IsAdminUser]
 
     def get(self, format=None):
         queryset = User.objects.all().order_by('-date_joined')
@@ -90,6 +97,7 @@ class UserViewSetList(APIView):
 
 class GroupViewSetDetail(APIView):
     queryset = Group.objects.none()
+    permission_classes = [IsAdminUser]
 
     def get_object(self, pk=None):
         try:
@@ -125,6 +133,7 @@ class GroupViewSetDetail(APIView):
 
 
 class GroupViewSetList(APIView):
+    permission_classes = [IsAdminUser]
     queryset = Group.objects.none()
 
     def get(self, format=None):
@@ -142,6 +151,7 @@ class GroupViewSetList(APIView):
 
 class ProfileViewSetDetail(APIView):
     queryset = Profile.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_object(self, pk=None):
         try:
@@ -178,6 +188,7 @@ class ProfileViewSetDetail(APIView):
 
 class ProfileViewSetList(APIView):
     queryset = Profile.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
     pagination_class = LimitOffsetPagination
 
     def get(self, request, format=None):
@@ -200,6 +211,7 @@ class ProfileViewSetList(APIView):
 
 class ProfileLinkViewSetDetail(APIView):
     queryset = ProfileLink.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_object(self, pk=None):
         try:
@@ -236,6 +248,7 @@ class ProfileLinkViewSetDetail(APIView):
 
 class ProfileLinkViewSetList(APIView):
     queryset = ProfileLink.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
     pagination_class = LimitOffsetPagination
 
     def get(self, request, format=None):
@@ -258,6 +271,7 @@ class ProfileLinkViewSetList(APIView):
 
 class ArticleViewSetDetail(APIView):
     queryset = Article.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -294,6 +308,7 @@ class ArticleViewSetDetail(APIView):
 
 class ArticleViewSetList(APIView):
     queryset = Article.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
     pagination_class = LimitOffsetPagination
 
     def get_objects(self):
@@ -331,6 +346,7 @@ class ArticleViewSetList(APIView):
 
 class CommentViewSetDetail(APIView):
     queryset = Comment.objects.none()
+    permission_classes = [IsOwnerOrAdminForCommentViewOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -345,6 +361,7 @@ class CommentViewSetDetail(APIView):
 
     def put(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
+        self.check_object_permissions(self.request, queryset)
         serializer = CommentSaveSerializer(queryset, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -353,11 +370,13 @@ class CommentViewSetDetail(APIView):
 
     def delete(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
+        self.check_object_permissions(self.request, queryset)
         queryset.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def patch(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
+        self.check_object_permissions(self.request, queryset)
         serializer = CommentSaveSerializer(queryset, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -367,12 +386,13 @@ class CommentViewSetDetail(APIView):
 
 class CommentViewSetList(APIView):
     queryset = Comment.objects.none()
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_objects(self):
         article_id = self.request.query_params.get('article', None)
-        if article_id is None:
-            return Comment.objects.all().order_by('-creation_date')
-        return Comment.objects.filter(article=article_id).order_by('-creation_date')
+        if article_id is not None:
+            return Comment.objects.filter(article=article_id).order_by('-creation_date')
+        else: return Comment.objects.all().order_by('-creation_date')
 
     def get(self, request, format=None):
         queryset = self.get_objects()
@@ -389,6 +409,7 @@ class CommentViewSetList(APIView):
 
 class TagViewSetDetail(APIView):
     queryset = Tag.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -425,6 +446,7 @@ class TagViewSetDetail(APIView):
 
 class TagViewSetList(APIView):
     queryset = Tag.objects.none()
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, format=None):
         queryset = Tag.objects.all()
@@ -441,6 +463,7 @@ class TagViewSetList(APIView):
 
 class FileViewSetDetail(APIView):
     queryset = File.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -477,7 +500,8 @@ class FileViewSetDetail(APIView):
 
 class FileViewSetList(APIView):
     queryset = File.objects.none()
-
+    permission_classes = [IsAuthenticated]
+    
     def get(self, format=None):
         queryset = File.objects.all()
         serializer = FileSerializer(queryset, many=True)
@@ -568,6 +592,7 @@ class HardwareSet(viewsets.ModelViewSet):
 
 class HardwareViewSetDetail(APIView):
     queryset = Hardware.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_object(self, pk=None):
         try:
@@ -604,6 +629,7 @@ class HardwareViewSetDetail(APIView):
 
 class HardwareViewSetList(APIView):
     queryset = Hardware.objects.none()
+    permission_classes = [IsAuthenticated]
     pagination_class = LimitOffsetPagination
 
     def get(self, request, format=None):
@@ -626,6 +652,7 @@ class HardwareViewSetList(APIView):
 
 class ProjectViewSetDetail(APIView):
     queryset = Project.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -660,6 +687,7 @@ class ProjectViewSetDetail(APIView):
 
 
 class ProjectViewSetList(APIView):
+    permission_classes = [IsAdminOrReadOnly]
     queryset = Project.objects.none()
     pagination_class = LimitOffsetPagination
 
@@ -682,6 +710,7 @@ class ProjectViewSetList(APIView):
 
 class SectionViewSetDetail(APIView):
     queryset = Section.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_object(self, pk=None):
         try:
@@ -718,6 +747,7 @@ class SectionViewSetDetail(APIView):
 
 class SectionViewSetList(APIView):
     queryset = Section.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
 
     def get(self, format=None):
         queryset = Section.objects.all()
@@ -734,6 +764,7 @@ class SectionViewSetList(APIView):
 
 class GalleryViewSetDetail(APIView):
     queryset = Gallery.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -770,6 +801,7 @@ class GalleryViewSetDetail(APIView):
 
 class GalleryViewSetList(APIView):
     queryset = Gallery.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_objects(self):
         article_id = self.request.query_params.get('article', None)
