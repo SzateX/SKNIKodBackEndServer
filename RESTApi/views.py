@@ -52,7 +52,7 @@ class UserViewSetDetail(APIView):
         self.check_object_permissions(self.request, queryset)
         serializer = UserSerializer(queryset)
         return Response(serializer.data)
-        
+
     def put(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
         self.check_object_permissions(self.request, queryset)
@@ -133,8 +133,8 @@ class GroupViewSetDetail(APIView):
 
 
 class GroupViewSetList(APIView):
-    queryset = User.objects.none()
     permission_classes = [IsAdminUser]
+    queryset = Group.objects.none()
 
     def get(self, format=None):
         queryset = Group.objects.all()
@@ -268,7 +268,7 @@ class ProfileLinkViewSetList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-      
+
 class ArticleViewSetDetail(APIView):
     queryset = Article.objects.none()
     permission_classes = [IsAdminOrReadOnly]
@@ -398,7 +398,7 @@ class CommentViewSetList(APIView):
         queryset = self.get_objects()
         serializer = CommentSerializer(queryset, many="True")
         return Response(serializer.data)
-    
+
     def post(self, request, format=None):
         serializer = CommentSaveSerializer(data=request.data)
         if serializer.is_valid():
@@ -421,7 +421,7 @@ class TagViewSetDetail(APIView):
         queryset = self.get_object(pk)
         serializer = TagSerializer(queryset)
         return Response(serializer.data)
-        
+
     def put(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
         serializer = TagSerializer(queryset, data=request.data)
@@ -475,7 +475,7 @@ class FileViewSetDetail(APIView):
         queryset = self.get_object(pk)
         serializer = FileSerializer(queryset)
         return Response(serializer.data)
-        
+
     def put(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
         serializer = FileSaveSerializer(queryset, data=request.data)
@@ -506,7 +506,7 @@ class FileViewSetList(APIView):
         queryset = File.objects.all()
         serializer = FileSerializer(queryset, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request, format=None):
         serializer = FileSaveSerializer(data=request.data)
         if serializer.is_valid():
@@ -672,7 +672,6 @@ class ProjectViewSetDetail(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     def delete(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
         queryset.delete()
@@ -688,10 +687,10 @@ class ProjectViewSetDetail(APIView):
 
 
 class ProjectViewSetList(APIView):
-    queryset = User.objects.none()
     permission_classes = [IsAdminOrReadOnly]
+    queryset = Project.objects.none()
     pagination_class = LimitOffsetPagination
-    
+
     def get(self, request, format=None):
         queryset = Project.objects.all()
         paginator = self.pagination_class()
@@ -701,14 +700,14 @@ class ProjectViewSetList(APIView):
             return paginator.get_paginated_response(serializer.data)
         serializer = ProjectSerializer(queryset, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request, format=None):
         serializer = ProjectSaveSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-      
+
 class SectionViewSetDetail(APIView):
     queryset = Section.objects.none()
     permission_classes = [IsAdminOrReadOnly]
@@ -762,7 +761,7 @@ class SectionViewSetList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-      
+
 class GalleryViewSetDetail(APIView):
     queryset = Gallery.objects.none()
     permission_classes = [IsAdminOrReadOnly]
@@ -814,7 +813,7 @@ class GalleryViewSetList(APIView):
         queryset = self.get_objects()
         serializer = GallerySerializer(queryset, many="True")
         return Response(serializer.data)
-        
+
     def post(self, request, format=None):
         serializer = GallerySerializer(data=request.data)
         if serializer.is_valid():
