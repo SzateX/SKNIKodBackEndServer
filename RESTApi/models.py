@@ -68,9 +68,9 @@ class Article(models.Model):
     text = models.TextField()
     creation_date = models.DateTimeField()
     publication_date = models.DateTimeField(null=True)
-    creator = models.ForeignKey('Profile', on_delete=models.CASCADE,
+    creator = models.ForeignKey(User, on_delete=models.CASCADE,
                                 related_name='articles')
-    authors = models.ManyToManyField('Profile', blank=True)
+    authors = models.ManyToManyField(User, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
@@ -85,8 +85,15 @@ class Comment(models.Model):
                                 related_name='comments', null=True)
     project = models.ForeignKey('Project', on_delete=models.CASCADE,
                                 related_name='comments', null=True)
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE,
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='comments')
+
+    def save(self, *args, **kwargs):
+        if (self.article or self.project) and not (self.article and self.project):
+            pass
+        else:
+            raise Exception("U have to provide article id or project id")
+        super(Comment, self).save(*args, **kwargs)
 
     def __str__(self):
         return "%s: %s - %s" % (self.article.title, self.user, self.text[0:50] + "..." if len(self.text) > 50 else self.text)
@@ -105,7 +112,7 @@ class File(models.Model):
 
 
 class HardwareRental(models.Model):
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE,
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='rentals')
     hardware = models.ForeignKey('Hardware', on_delete=models.CASCADE,
                                  related_name='rentals')
@@ -130,11 +137,11 @@ class Project(models.Model):
     text = models.TextField()
     creation_date = models.DateTimeField()
     publication_date = models.DateTimeField(null=True)
-    creator = models.ForeignKey('Profile', on_delete=models.CASCADE,
+    creator = models.ForeignKey(User, on_delete=models.CASCADE,
                                 related_name='projects')
     section = models.ForeignKey('Section', on_delete=models.CASCADE,
                                 related_name='projects', null=True)
-    authors = models.ManyToManyField('Profile', blank=True)
+    authors = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return self.title
