@@ -226,21 +226,14 @@ class ProjectSaveSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     user = ShortUserSerializer()
     article = ArticleSerializer()
-    project = ProjectSerializer()
 
     class Meta:
         model = Comment
-        fields = ('id', 'text', 'creation_date', 'article', 'project', 'user')
+        fields = ('id', 'text', 'creation_date', 'article', 'parent', 'user')
         depth = 2
 
 
 class CommentSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('id', 'text', 'creation_date', 'article', 'project', 'user')
-    
-    def validation(self, data):
-        if ('article' in data or 'project' in data) and not ('article' in data and 'project' in data):
-            pass
-        else:
-            raise serializers.ValidationError("U have to provide article id or project id")
+        fields = ('id', 'text', 'creation_date', 'article', 'parent', 'user')
