@@ -25,10 +25,11 @@ class RegisterWithFullNameSerializer(RegisterSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    is_admin_user = serializers.SerializerMethodField()
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'groups', 'profile', 'password',
-                  'first_name', 'last_name')
+                  'first_name', 'last_name', 'is_admin_user')
         read_only_fields = ('profile', 'groups')
         extra_kwargs = {
             'password': {'write_only': True}
@@ -44,6 +45,9 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+    def get_is_admin_user(self, obj):
+        return obj.is_staff
 
 
 class ProfileWithoutUserSerializer(serializers.ModelSerializer):
