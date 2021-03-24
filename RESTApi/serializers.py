@@ -226,11 +226,15 @@ class ProjectSaveSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     user = ShortUserSerializer()
     article = ArticleSerializer()
+    children = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
-        fields = ('id', 'text', 'creation_date', 'article', 'parent', 'user')
+        fields = ('id', 'text', 'creation_date', 'article', 'parent', 'user', 'children')
         depth = 2
+    
+    def get_children(self, obj):
+        return Comment.objects.filter(parent=obj).values_list('id', flat=True)
 
 
 class CommentSaveSerializer(serializers.ModelSerializer):
