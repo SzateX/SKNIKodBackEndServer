@@ -234,7 +234,7 @@ class CommentSerializer(serializers.ModelSerializer):
         depth = 2
     
     def get_children(self, obj):
-        child = Comment.objects.filter(parent=obj)
+        child = Comment.objects.filter(parent=obj).order_by('-creation_date')
         serializer = CommentSerializer(instance=child, many=True)
         return serializer.data
 
