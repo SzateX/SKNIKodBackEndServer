@@ -1,9 +1,18 @@
+import io
+from io import BytesIO
+import datetime
 import django_filters
 from django.contrib.auth.models import User, Group
-from django.http import Http404
+from django.http import Http404, HttpResponse, FileResponse
+from django.views import View
+from django.core.files import File as FFile
 from django.views.generic import TemplateView
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import Http404
+from reportlab.lib.utils import ImageReader
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
 
 from rest_framework import viewsets, status
 from rest_framework.pagination import LimitOffsetPagination
@@ -290,7 +299,7 @@ class ArticleViewSetDetail(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-        else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
@@ -303,7 +312,7 @@ class ArticleViewSetDetail(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-        else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ArticleViewSetList(APIView):
@@ -381,7 +390,7 @@ class CommentViewSetDetail(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-        else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CommentViewSetList(APIView):
@@ -404,7 +413,7 @@ class CommentViewSetList(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TagViewSetDetail(APIView):
@@ -427,7 +436,7 @@ class TagViewSetDetail(APIView):
         serializer = TagSerializer(queryset, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk=None, format=None):
@@ -538,14 +547,14 @@ class HardwareRentalViewSetDetail(APIView):
     def get(self, request, pk=None, format=None):
         queryset = self.get_object(pk=pk)
         serializer = HardwareRentalSerializer(queryset)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
         serializer = HardwareRentalSaveSerializer(queryset, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk=None, format=None):
@@ -573,7 +582,14 @@ class HardwareRentalViewSetList(APIView):
     def post(self, request, format=None):
         serializer = HardwareRentalSaveSerializer(data=request.data)
         if serializer.is_valid():
+            if serializer.validated_data["hardware"].rentals.filter(return_date__isnull=False).exists():
+                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
+            pdf = generate_pdf(serializer.validated_data)
+            with open('glejt.pdf', 'wb+') as glejt:
+                glejt.write(pdf.getbuffer())
+                file = FFile(glejt)
+                serializer.save().file.save(f'glejt{datetime.datetime}.pdf', file)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -683,7 +699,7 @@ class ProjectViewSetDetail(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-        else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProjectViewSetList(APIView):
@@ -707,6 +723,7 @@ class ProjectViewSetList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class SectionViewSetDetail(APIView):
     queryset = Section.objects.none()
@@ -820,3 +837,31 @@ class GalleryViewSetList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def generate_pdf(data):
+    buffer = io.BytesIO()
+    pdf = canvas.Canvas(buffer)
+    pdfmetrics.registerFont(TTFont('Verdana', 'RESTApi/templates/verdana.ttf'))
+    pdf.setFont('Verdana', 10)
+    pdf.drawImage('RESTApi/templates/logo_color.bmp', 40, 720, width=192, height=103)
+    pdf.drawString(50, 710, 'Studenckie Koło Naukowe Informatyków „KOD”')
+    pdf.drawString(50, 696, 'Politechnika Rzeszowska')
+    pdf.drawString(50, 682, 'Katedra Informatyki i Automatyki')
+    pdf.drawString(400, 710, f'Rzeszów, {data["rental_date"].date()}')
+    pdf.setFont('Verdana', 15)
+    pdf.drawCentredString(300, 600, 'Oświadczenie - rewers')
+    pdf.setFont('Verdana', 10)
+    pdf.drawCentredString(300, 550, 'Ja, niżej podpisany:')
+    pdf.drawCentredString(300, 530, f'{data["user"].first_name} {data["user"].last_name}')
+    pdf.drawCentredString(300, 510, f'członek SKNI „KOD”, o numerze indeksu {data["user"].profile.index_number}')
+    pdf.drawCentredString(300, 490, 'oświadczam, że wypożyczam następujący sprzęt:')
+    pdf.drawCentredString(300, 470, f'{data["hardware"].name} o numerze seryjnym {data["hardware"].serial_number}')
+    pdf.drawCentredString(300, 450,
+                          'którego właścicielem jest Politechnika Rzeszowska, Katedra Informatyki i Automatyki.')
+    pdf.drawCentredString(300, 430, f'W razie zgubienia lub uszkodzenia zobowiązuję się do pokrycia kosztów.')
+    pdf.drawCentredString(300, 410, f'Urządzenie zwrócę najpóźniej do dnia: {data["return_date"].date()}')
+    pdf.showPage()
+    pdf.save()
+    buffer.seek(0)
+    return buffer
