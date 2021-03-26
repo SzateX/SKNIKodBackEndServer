@@ -119,17 +119,24 @@ class TagSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     user = ShortUserSerializer()
+    article = ArticleSerializer()
+    children = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
-        fields = ('id', 'text', 'creation_date', 'article_id', 'project_id', 'user')
+        fields = ('id', 'text', 'creation_date', 'article', 'parent', 'user', 'children')
         depth = 2
+    
+    def get_children(self, obj):
+        child = Comment.objects.filter(parent=obj).order_by('-creation_date')
+        serializer = CommentSerializer(instance=child, many=True)
+        return serializer.data
 
 
 class CommentSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('id', 'text', 'creation_date', 'article_id', 'project_id', 'user')
+        fields = ('id', 'text', 'creation_date', 'article', 'parent', 'user')
 
     def validate(self, data):
         if ('article_id' in data or 'project_id' in data) and not ('article_id' in data and 'project_id' in data):
