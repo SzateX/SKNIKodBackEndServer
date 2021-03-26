@@ -49,12 +49,12 @@ class UserSerializer(serializers.ModelSerializer):
 class ProfileWithoutUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('id', 'description', 'profile_links')
+        fields = ('id', 'description', 'profile_links', 'index_number')
 
 
 class ShortUserSerializer(serializers.ModelSerializer):
     profile = ProfileWithoutUserSerializer()
-    
+
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 'profile')
@@ -85,7 +85,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('id', 'user', 'description', 'avatar', 'profile_links')
+        fields = ('id', 'user', 'description', 'avatar', 'index_number', 'profile_links')
 
 
 class GallerySerializer(serializers.ModelSerializer):
@@ -126,7 +126,7 @@ class CommentSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('id', 'text', 'creation_date', 'article_id', 'project_id', 'user')
-    
+
     def validate(self, data):
         if ('article_id' in data or 'project_id' in data) and not ('article_id' in data and 'project_id' in data):
             raise serializers.ValidationError("U have to provide article id or project id")
@@ -157,8 +157,8 @@ class ArticleSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = (
-        'id', 'alias', 'title', 'text', 'creation_date', 'publication_date',
-        'creator', 'tags', 'authors', 'gallery')
+            'id', 'alias', 'title', 'text', 'creation_date', 'publication_date',
+            'creator', 'tags', 'authors', 'gallery')
 
 
 class FileSerializer(serializers.ModelSerializer):
@@ -199,7 +199,7 @@ class HardwareRentalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HardwareRental
-        fields = ('id', 'rental_date', 'return_date', 'user', 'hardware')
+        fields = ('id', 'rental_date', 'return_date', 'user', 'hardware', 'file')
 
 
 class HardwareRentalSaveSerializer(serializers.ModelSerializer):
