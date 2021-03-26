@@ -83,16 +83,14 @@ class Comment(models.Model):
     text = models.TextField()
     creation_date = models.DateTimeField(default=timezone.now)
     article = models.ForeignKey('Article', on_delete=models.CASCADE,
-                                related_name='comments', null=True)
-    project = models.ForeignKey('Project', on_delete=models.CASCADE,
+                                related_name='comments')
+    parent = models.ForeignKey('self', on_delete=models.CASCADE,
                                 related_name='comments', null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='comments')
 
-    def save(self, *args, **kwargs):
-        if (self.article or self.project) and not (self.article and self.project):
-            raise Exception("U have to provide article id or project id")
-        super(Comment, self).save(*args, **kwargs)
+    def children(self):
+        return Comment.objects.filter(parent=self)
 
     def __str__(self):
         return "%s: %s - %s" % (self.article.title, self.user, self.text[0:50] + "..." if len(self.text) > 50 else self.text)
