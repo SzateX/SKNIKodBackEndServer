@@ -11,6 +11,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     description = models.TextField(null=True, blank=True)
     avatar = models.ImageField(upload_to='avatars/', null=True)
+    index_number = models.CharField(max_length=6, default=None)
 
     def __str__(self):
         return self.user.username
@@ -107,6 +108,7 @@ class File(models.Model):
         return "%s - %s" % (self.user.user.username, self.article.title)
 
 
+
 class HardwareRental(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='rentals')
@@ -114,9 +116,10 @@ class HardwareRental(models.Model):
                                  related_name='rentals')
     rental_date = models.DateTimeField()
     return_date = models.DateTimeField(null=True, blank=True)
+    file = models.FileField(upload_to='hardware_rental/', blank=True)
 
     def __str__(self):
-        return "%s - %s" % (self.user.user.username, self.hardware.name)
+        return "%s - %s" % (self.user.username, self.hardware.name)
 
 
 class Hardware(models.Model):
