@@ -116,6 +116,22 @@ class TagSerializer(serializers.ModelSerializer):
         model = Tag
         fields = ('id', 'name')
 
+class ArticleSerializer(serializers.ModelSerializer):
+    creator = ShortUserSerializer()
+    tags = TagSerializer(many=True)
+    comments_number = serializers.SerializerMethodField()
+    gallery = GallerySerializer(many=True)
+    authors = ShortUserSerializer(many=True)
+
+    class Meta:
+        model = Article
+        fields = (
+            'id', 'alias', 'title', 'text', 'creation_date',
+            'publication_date', 'creator', 'authors', 'tags', 'comments_number',
+            'gallery')
+
+    def get_comments_number(self, obj):
+        return obj.comments.count()
 
 class CommentSerializer(serializers.ModelSerializer):
     user = ShortUserSerializer()
@@ -144,22 +160,7 @@ class CommentSaveSerializer(serializers.ModelSerializer):
         super(CommentSaveSerializer, self).validate(data)
 
 
-class ArticleSerializer(serializers.ModelSerializer):
-    creator = ShortUserSerializer()
-    tags = TagSerializer(many=True)
-    comments_number = serializers.SerializerMethodField()
-    gallery = GallerySerializer(many=True)
-    authors = ShortUserSerializer(many=True)
 
-    class Meta:
-        model = Article
-        fields = (
-            'id', 'alias', 'title', 'text', 'creation_date',
-            'publication_date', 'creator', 'authors', 'tags', 'comments_number',
-            'gallery')
-
-    def get_comments_number(self, obj):
-        return obj.comments.count()
 
 
 class ArticleSaveSerializer(serializers.ModelSerializer):
