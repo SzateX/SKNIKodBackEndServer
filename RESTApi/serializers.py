@@ -186,7 +186,6 @@ class FileSaveSerializer(serializers.ModelSerializer):
 
 
 class HardwareSerializer(serializers.ModelSerializer):
-    is_rented = serializers.SerializerMethodField()
 
     class Meta:
         model = Hardware
