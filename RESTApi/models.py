@@ -127,9 +127,13 @@ class HardwareRental(models.Model):
 
 
 class Hardware(models.Model):
+    statusy = (('Rented', 'Rented'),
+               ('Available', 'Available'),
+               ('Unavailable', 'Unavailable'))
     name = models.TextField()
     description = models.TextField()
     serial_number = models.TextField()
+    status = models.TextField(choices=statusy, default='Unavailable')
 
     def __str__(self):
         return self.name

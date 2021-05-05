@@ -160,9 +160,6 @@ class CommentSaveSerializer(serializers.ModelSerializer):
         super(CommentSaveSerializer, self).validate(data)
 
 
-
-
-
 class ArticleSaveSerializer(serializers.ModelSerializer):
     gallery = serializers.PrimaryKeyRelatedField(many=True, required=False, queryset=Gallery.objects.all())
 
@@ -193,10 +190,7 @@ class HardwareSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Hardware
-        fields = ('id', 'name', 'description', 'serial_number', 'is_rented')
-
-    def get_is_rented(self, obj):
-        return obj.rentals.filter(return_date__isnull=True).exists()
+        fields = ('id', 'name', 'description', 'serial_number', 'status')
 
 
 class HardwareSaveSerializer(serializers.ModelSerializer):
