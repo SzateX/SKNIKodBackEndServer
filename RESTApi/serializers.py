@@ -5,7 +5,7 @@ from rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from .models import Profile, ProfileLink, Article, Comment, Tag, \
     File, HardwareRental, Hardware, Project, \
-    Section, Gallery, RepoLink  # ArticleTag, ArticleAuthor
+    Section, Gallery, RepoLink, Sponsor  # ArticleTag, ArticleAuthor
 
 from sorl_thumbnail_serializer.fields import HyperlinkedSorlImageField
 
@@ -246,3 +246,10 @@ class ProjectSaveSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
                   'repository_links', 'creator', 'section', 'authors', 'gallery')
         extra_kwargs = {'gallery': {'required': False}}
+
+
+class SponsorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Sponsor
+        fields = ('id', 'name', 'image', 'url')

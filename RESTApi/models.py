@@ -205,3 +205,9 @@ class Gallery(models.Model):
 class ProjectGallery(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='gallery')
     image = ImageField(upload_to='project_gallery/')
+
+
+class Sponsor(models.Model):
+    name = models.CharField(max_length=60)
+    url = models.URLField(null=True)
+    logo = models.ImageField(upload_to='sponsor_logo/')
