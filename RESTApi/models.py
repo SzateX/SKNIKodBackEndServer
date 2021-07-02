@@ -203,3 +203,9 @@ class Section(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Sponsor(models.Model):
+    name = models.CharField(max_length=60)
+    url = models.URLField(null=True)
+    logo = models.ImageField(upload_to='sponsor_logo/')
