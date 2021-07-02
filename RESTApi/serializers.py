@@ -32,11 +32,12 @@ class GenericLinkSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     is_admin_user = serializers.SerializerMethodField()
+    permissions = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'groups', 'profile', 'password',
-                  'first_name', 'last_name', 'is_admin_user')
+                  'first_name', 'last_name', 'is_admin_user', 'permissions')
         read_only_fields = ('profile', 'groups')
         extra_kwargs = {
             'password': {'write_only': True}
@@ -55,6 +56,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_admin_user(self, obj):
         return obj.is_staff
+
+    def get_permissions(self, obj):
+        all_permissions = filter(lambda x: x.startswith('RESTApi') or x.startswith('auth') and not x.startswith('authtoken'), User(is_superuser=True).get_all_permissions())
+        user_permissions = obj.get_all_permissions()
+
+        return {p: p in user_permissions for p in all_permissions}
 
 
 class ProfileWithoutUserSerializer(serializers.ModelSerializer):

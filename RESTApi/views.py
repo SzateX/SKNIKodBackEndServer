@@ -89,7 +89,7 @@ class UserViewSetDetail(APIView):
 
 class UserViewSetList(APIView):
     queryset = User.objects.none()
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get(self, format=None):
         queryset = User.objects.all().order_by('-date_joined')
@@ -220,7 +220,7 @@ class ProfileViewSetList(APIView):
 
 class ArticleViewSetDetail(APIView):
     queryset = Article.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
     def get_object(self, pk):
         try:
@@ -257,7 +257,7 @@ class ArticleViewSetDetail(APIView):
 
 class ArticleViewSetList(APIView):
     queryset = Article.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
     pagination_class = LimitOffsetPagination
 
     def get_objects(self):
@@ -358,7 +358,7 @@ class CommentViewSetList(APIView):
 
 class TagViewSetDetail(APIView):
     queryset = Tag.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
     def get_object(self, pk):
         try:
@@ -395,7 +395,7 @@ class TagViewSetDetail(APIView):
 
 class TagViewSetList(APIView):
     queryset = Tag.objects.none()
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
     def get(self, format=None):
         queryset = Tag.objects.all()
@@ -412,7 +412,7 @@ class TagViewSetList(APIView):
 
 class FileViewSetDetail(APIView):
     queryset = File.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
     def get_object(self, pk):
         try:
@@ -449,7 +449,7 @@ class FileViewSetDetail(APIView):
 
 class FileViewSetList(APIView):
     queryset = File.objects.none()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
     
     def get(self, format=None):
         queryset = File.objects.all()
@@ -465,7 +465,7 @@ class FileViewSetList(APIView):
 
 
 class HardwareRentalSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = HardwareRental.objects.all()
     serializer_class = HardwareRentalSerializer
 
@@ -477,6 +477,7 @@ class HardwareRentalSet(viewsets.ModelViewSet):
 
 class HardwareRentalViewSetDetail(APIView):
     queryset = HardwareRental.objects.none()
+    permission_classes = (permissions.DjangoModelPermissions,)
 
     def get_object(self, pk=None):
         try:
@@ -513,6 +514,7 @@ class HardwareRentalViewSetDetail(APIView):
 
 class HardwareRentalViewSetList(APIView):
     queryset = HardwareRental.objects.none()
+    permission_classes = (permissions.DjangoModelPermissions,)
 
     def get(self, format=None):
         queryset = HardwareRental.objects.all()
@@ -535,7 +537,7 @@ class HardwareRentalViewSetList(APIView):
 
 
 class HardwareSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = Hardware.objects.all()
     serializer_class = HardwareSerializer
     pagination_class = LimitOffsetPagination
@@ -548,7 +550,7 @@ class HardwareSet(viewsets.ModelViewSet):
 
 class HardwareViewSetDetail(APIView):
     queryset = Hardware.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissions,)
 
     def get_object(self, pk=None):
         try:
@@ -585,7 +587,7 @@ class HardwareViewSetDetail(APIView):
 
 class HardwareViewSetList(APIView):
     queryset = Hardware.objects.none()
-    permission_classes = [IsAuthenticated]
+    permission_classes = (permissions.DjangoModelPermissions,)
     pagination_class = LimitOffsetPagination
 
     def get(self, request, format=None):
@@ -608,7 +610,7 @@ class HardwareViewSetList(APIView):
 
 class ProjectViewSetDetail(APIView):
     queryset = Project.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get_object(self, pk):
         try:
@@ -628,6 +630,7 @@ class ProjectViewSetDetail(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def delete(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
         queryset.delete()
@@ -643,7 +646,7 @@ class ProjectViewSetDetail(APIView):
 
 
 class ProjectViewSetList(APIView):
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Project.objects.none()
     pagination_class = LimitOffsetPagination
 
@@ -667,7 +670,7 @@ class ProjectViewSetList(APIView):
 
 class SectionViewSetDetail(APIView):
     queryset = Section.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get_object(self, pk=None):
         try:
@@ -704,7 +707,7 @@ class SectionViewSetDetail(APIView):
 
 class SectionViewSetList(APIView):
     queryset = Section.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get(self, format=None):
         queryset = Section.objects.all()
@@ -721,7 +724,7 @@ class SectionViewSetList(APIView):
 
 class GalleryViewSetDetail(APIView):
     queryset = Gallery.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get_object(self, pk):
         try:
@@ -758,7 +761,7 @@ class GalleryViewSetDetail(APIView):
 
 class GalleryViewSetList(APIView):
     queryset = Gallery.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get_objects(self):
         article_id = self.request.query_params.get('article', None)
@@ -781,7 +784,7 @@ class GalleryViewSetList(APIView):
 
 class SponsorViewSetDetail(APIView):
     queryset = Sponsor.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get_object(self, pk):
         try:
@@ -818,7 +821,7 @@ class SponsorViewSetDetail(APIView):
 
 class SponsorViewSetList(APIView):
     queryset = Sponsor.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get(self, format=None):
         queryset = Sponsor.objects.all()
@@ -863,7 +866,7 @@ def generate_pdf(data):
 
 class GenericLinkViewSetDetail(APIView):
     queryset = GenericLink.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get_object(self, pk=None):
         try:
@@ -900,7 +903,7 @@ class GenericLinkViewSetDetail(APIView):
 
 class GenericLinkViewSetList(APIView):
     queryset = GenericLink.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     pagination_class = LimitOffsetPagination
 
     def get(self, request, format=None):
@@ -923,7 +926,7 @@ class GenericLinkViewSetList(APIView):
 
 class FooterLinkListView(APIView):
     queryset = FooterLink.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get(self, request, format=None):
         queryset = FooterLink.objects.all()
@@ -940,7 +943,7 @@ class FooterLinkListView(APIView):
 
 class FooterLinkDetailView(APIView):
     queryset = FooterLink.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get_object(self, pk=None):
         try:
