@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_swagger',
     'sorl.thumbnail',
-    'sorl_thumbnail_serializer'
+    'sorl_thumbnail_serializer',
+    'dynamic_preferences',
+    'dynamic_preferences.users.apps.UserPreferencesConfig',
 ]
 
 MIDDLEWARE = [

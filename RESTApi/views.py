@@ -89,7 +89,7 @@ class UserViewSetDetail(APIView):
 
 class UserViewSetList(APIView):
     queryset = User.objects.none()
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get(self, format=None):
         queryset = User.objects.all().order_by('-date_joined')
@@ -218,69 +218,9 @@ class ProfileViewSetList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProfileLinkViewSetDetail(APIView):
-    queryset = ProfileLink.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
-
-    def get_object(self, pk=None):
-        try:
-            return ProfileLink.objects.get(pk=pk)
-        except Profile.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk=None, format=None):
-        queryset = self.get_object(pk=pk)
-        serializer = ProfileLinkSerializer(queryset)
-        return Response(serializer.data)
-
-    def put(self, request, pk=None, format=None):
-        queryset = self.get_object(pk)
-        serializer = ProfileLinkSaveSerializer(queryset, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk=None, format=None):
-        queryset = self.get_object(pk)
-        queryset.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def patch(self, request, pk=None, format=None):
-        queryset = self.get_object(pk)
-        serializer = ProfileLinkSerializer(queryset, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ProfileLinkViewSetList(APIView):
-    queryset = ProfileLink.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
-    pagination_class = LimitOffsetPagination
-
-    def get(self, request, format=None):
-        queryset = ProfileLink.objects.all()
-        paginator = self.pagination_class()
-        result_page = paginator.paginate_queryset(queryset, request)
-        if result_page is not None:
-            serializer = ProfileLinkSerializer(result_page, many=True)
-            return paginator.get_paginated_response(serializer.data)
-        serializer = ProfileLinkSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = ProfileLinkSaveSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 class ArticleViewSetDetail(APIView):
     queryset = Article.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
     def get_object(self, pk):
         try:
@@ -317,7 +257,7 @@ class ArticleViewSetDetail(APIView):
 
 class ArticleViewSetList(APIView):
     queryset = Article.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
     pagination_class = LimitOffsetPagination
 
     def get_objects(self):
@@ -418,7 +358,7 @@ class CommentViewSetList(APIView):
 
 class TagViewSetDetail(APIView):
     queryset = Tag.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
     def get_object(self, pk):
         try:
@@ -455,7 +395,7 @@ class TagViewSetDetail(APIView):
 
 class TagViewSetList(APIView):
     queryset = Tag.objects.none()
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
     def get(self, format=None):
         queryset = Tag.objects.all()
@@ -472,7 +412,7 @@ class TagViewSetList(APIView):
 
 class FileViewSetDetail(APIView):
     queryset = File.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
     def get_object(self, pk):
         try:
@@ -509,7 +449,7 @@ class FileViewSetDetail(APIView):
 
 class FileViewSetList(APIView):
     queryset = File.objects.none()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
     
     def get(self, format=None):
         queryset = File.objects.all()
@@ -525,7 +465,7 @@ class FileViewSetList(APIView):
 
 
 class HardwareRentalSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = HardwareRental.objects.all()
     serializer_class = HardwareRentalSerializer
 
@@ -537,6 +477,7 @@ class HardwareRentalSet(viewsets.ModelViewSet):
 
 class HardwareRentalViewSetDetail(APIView):
     queryset = HardwareRental.objects.none()
+    permission_classes = (permissions.DjangoModelPermissions,)
 
     def get_object(self, pk=None):
         try:
@@ -573,6 +514,7 @@ class HardwareRentalViewSetDetail(APIView):
 
 class HardwareRentalViewSetList(APIView):
     queryset = HardwareRental.objects.none()
+    permission_classes = (permissions.DjangoModelPermissions,)
 
     def get(self, format=None):
         queryset = HardwareRental.objects.all()
@@ -595,7 +537,7 @@ class HardwareRentalViewSetList(APIView):
 
 
 class HardwareSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = Hardware.objects.all()
     serializer_class = HardwareSerializer
     pagination_class = LimitOffsetPagination
@@ -608,7 +550,7 @@ class HardwareSet(viewsets.ModelViewSet):
 
 class HardwareViewSetDetail(APIView):
     queryset = Hardware.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissions,)
 
     def get_object(self, pk=None):
         try:
@@ -645,7 +587,7 @@ class HardwareViewSetDetail(APIView):
 
 class HardwareViewSetList(APIView):
     queryset = Hardware.objects.none()
-    permission_classes = [IsAuthenticated]
+    permission_classes = (permissions.DjangoModelPermissions,)
     pagination_class = LimitOffsetPagination
 
     def get(self, request, format=None):
@@ -668,7 +610,7 @@ class HardwareViewSetList(APIView):
 
 class ProjectViewSetDetail(APIView):
     queryset = Project.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get_object(self, pk):
         try:
@@ -688,6 +630,7 @@ class ProjectViewSetDetail(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         else: return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def delete(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
         queryset.delete()
@@ -703,7 +646,7 @@ class ProjectViewSetDetail(APIView):
 
 
 class ProjectViewSetList(APIView):
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     queryset = Project.objects.none()
     pagination_class = LimitOffsetPagination
 
@@ -727,7 +670,7 @@ class ProjectViewSetList(APIView):
 
 class SectionViewSetDetail(APIView):
     queryset = Section.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get_object(self, pk=None):
         try:
@@ -764,7 +707,7 @@ class SectionViewSetDetail(APIView):
 
 class SectionViewSetList(APIView):
     queryset = Section.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get(self, format=None):
         queryset = Section.objects.all()
@@ -781,7 +724,7 @@ class SectionViewSetList(APIView):
 
 class GalleryViewSetDetail(APIView):
     queryset = Gallery.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get_object(self, pk):
         try:
@@ -818,7 +761,7 @@ class GalleryViewSetDetail(APIView):
 
 class GalleryViewSetList(APIView):
     queryset = Gallery.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get_objects(self):
         article_id = self.request.query_params.get('article', None)
@@ -841,7 +784,7 @@ class GalleryViewSetList(APIView):
 
 class SponsorViewSetDetail(APIView):
     queryset = Sponsor.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get_object(self, pk):
         try:
@@ -878,7 +821,7 @@ class SponsorViewSetDetail(APIView):
 
 class SponsorViewSetList(APIView):
     queryset = Sponsor.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     def get(self, format=None):
         queryset = Sponsor.objects.all()
@@ -919,3 +862,117 @@ def generate_pdf(data):
     pdf.save()
     buffer.seek(0)
     return buffer
+
+
+class GenericLinkViewSetDetail(APIView):
+    queryset = GenericLink.objects.none()
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+
+    def get_object(self, pk=None):
+        try:
+            return GenericLink.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk=None, format=None):
+        queryset = self.get_object(pk=pk)
+        serializer = GenericLinkBigSerializer(queryset)
+        return Response(serializer.data)
+
+    def put(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = GenericLinkBigSaveSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = GenericLinkBigSaveSerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GenericLinkViewSetList(APIView):
+    queryset = GenericLink.objects.none()
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+    pagination_class = LimitOffsetPagination
+
+    def get(self, request, format=None):
+        queryset = GenericLink.objects.all()
+        paginator = self.pagination_class()
+        result_page = paginator.paginate_queryset(queryset, request)
+        if result_page is not None:
+            serializer = GenericLinkBigSerializer(result_page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        serializer = GenericLinkBigSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = GenericLinkBigSaveSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class FooterLinkListView(APIView):
+    queryset = FooterLink.objects.none()
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+
+    def get(self, request, format=None):
+        queryset = FooterLink.objects.all()
+        serializer = FooterLinkSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = GenericLinkBigSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+
+class FooterLinkDetailView(APIView):
+    queryset = FooterLink.objects.none()
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
+
+    def get_object(self, pk=None):
+        try:
+            return FooterLink.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk=None, format=None):
+        queryset = self.get_object(pk=pk)
+        serializer = FooterLinkSerializer(queryset)
+        return Response(serializer.data)
+
+    def put(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = FooterLinkSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = FooterLinkSerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

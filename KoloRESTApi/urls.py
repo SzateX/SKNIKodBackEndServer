@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url, include
+from dynamic_preferences.api.viewsets import GlobalPreferencesViewSet
 from rest_auth.registration.views import SocialAccountListView, \
     SocialAccountDisconnectView
 from rest_framework import routers
@@ -32,12 +33,17 @@ from RESTApi import views
 
 router = routers.DefaultRouter()
 
+router.register(r'global', GlobalPreferencesViewSet, base_name='global')
+api_patterns = [
+    url(r'^preferences/', include(router.urls))
+]
+
 schema_view = get_swagger_view(title='SKNI KOD Website API')
 
 urlpatterns = [
     url(r'^$', IndexTemplateView.as_view()),
     url(r'^admin/', admin.site.urls),
-    url(r'^api/', include(router.urls)),
+    url(r'^api/', include(api_patterns)),
     url(r'^api-auth/',
         include('rest_framework.urls', namespace='rest_framework')),
     url(r'^rest-auth/', include('rest_auth.urls')),
@@ -70,8 +76,8 @@ urlpatterns = [
     url(r'^api/tags/(?P<pk>\d+)/$', views.TagViewSetDetail.as_view(), name='tag_detail'),
     url(r'^api/files/$', views.FileViewSetList.as_view(), name='file_list'),
     url(r'^api/files/(?P<pk>\d+)/$', views.FileViewSetDetail.as_view(), name='file_detail'),
-    url(r'^api/galery/$', views.GalleryViewSetList.as_view(), name='gallery_detail'),
-    url(r'^api/galery/(?P<pk>\d+)/$', views.GalleryViewSetDetail.as_view(), name='gallery_detail'),
+    url(r'^api/gallery/$', views.GalleryViewSetList.as_view(), name='gallery_detail'),
+    url(r'^api/gallery/(?P<pk>\d+)/$', views.GalleryViewSetDetail.as_view(), name='gallery_detail'),
     url(r'^api/hardware_rentals/$', views.HardwareRentalViewSetList.as_view(), name='hardware_rental_list'),
     url(r'^api/hardware_rentals/(?P<pk>\d+)/$', views.HardwareRentalViewSetDetail.as_view(), name='hardware_rental_detail'),
     url(r'^api/hardwares/$', views.HardwareViewSetList.as_view(), name='hardware_list'),
@@ -82,9 +88,11 @@ urlpatterns = [
     url(r'^api/projects/(?P<pk>\d+)/$', views.ProjectViewSetDetail.as_view(), name='project_detail'),
     url(r'^api/profiles/$', views.ProfileViewSetList.as_view(), name='profiles_detail'),
     url(r'^api/profiles/(?P<pk>\d+)/$', views.ProfileViewSetDetail.as_view(), name='profiles_detail'),
-    url(r'^api/profile_links/$', views.ProfileLinkViewSetList.as_view(), name='profile_link_detail'),
-    url(r'^api/profile_links/(?P<pk>\d+)/$', views.ProfileLinkViewSetDetail.as_view(), name='profile_link_detail'),
     url(r'^api/sponsors/$', views.SponsorViewSetList.as_view(), name='sponsor_list'),
     url(r'^api/sponsors/(?P<pk>\d)/$', views.SponsorViewSetDetail.as_view(), name='sponsor_detail'),
+    url(r'^api/generic_links/$', views.GenericLinkViewSetList.as_view(), name='generic_link_detail'),
+    url(r'^api/generic_links/(?P<pk>\d+)/$', views.GenericLinkViewSetDetail.as_view(), name='generic_link_list'),
+    url(r'^api/footer_links/$', views.FooterLinkListView.as_view(), name='footer_link_detail'),
+    url(r'^api/footer_links/(?P<pk>\d+)/$', views.FooterLinkDetailView.as_view(), name='footer_link_list'),
     url(r'^docs$', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
