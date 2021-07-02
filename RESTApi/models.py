@@ -62,6 +62,17 @@ class Tag(models.Model):
         return f"Tag: {self.name}"
 
 
+class Gallery(models.Model):
+    gallery_name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to="gallery/")
+
+    def __str__(self):
+        return "%s - %s" % (self.gallery_name, self.image.name)
+
+    class Meta:
+        verbose_name_plural = "galleries"
+
+
 class Article(models.Model):
     # Admin Owner
     title = models.CharField(max_length=100)
@@ -73,6 +84,8 @@ class Article(models.Model):
                                 related_name='articles')
     authors = models.ManyToManyField(User, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
+
+    gallery = models.ManyToManyField('Gallery')
 
     def __str__(self):
         return self.title
@@ -112,7 +125,6 @@ class File(models.Model):
         return "%s - %s" % (self.user.user.username, self.article.title)
 
 
-
 class HardwareRental(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='rentals')
@@ -150,6 +162,8 @@ class Project(models.Model):
                                 related_name='projects', null=True)
     authors = models.ManyToManyField(User, blank=True)
 
+    gallery = models.ManyToManyField('Gallery')
+
     def __str__(self):
         return self.title
 
@@ -185,26 +199,10 @@ class Section(models.Model):
     description = models.TextField()
     isVisible = models.BooleanField()
     icon = models.TextField(null=True, blank=True)
+    gallery = models.ManyToManyField('Gallery')
 
     def __str__(self):
         return self.name
-
-
-class Gallery(models.Model):
-    article = models.ForeignKey('Article', on_delete=models.CASCADE,
-                                related_name='gallery')
-    image = ImageField(upload_to='gallery/')
-
-    def __str__(self):
-        return "%s - %s" % (self.article.title, self.image.name)
-
-    class Meta:
-        verbose_name_plural = "galleries"
-
-
-class ProjectGallery(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='gallery')
-    image = ImageField(upload_to='project_gallery/')
 
 
 class Sponsor(models.Model):
