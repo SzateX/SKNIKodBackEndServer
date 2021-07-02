@@ -218,66 +218,6 @@ class ProfileViewSetList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProfileLinkViewSetDetail(APIView):
-    queryset = ProfileLink.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
-
-    def get_object(self, pk=None):
-        try:
-            return ProfileLink.objects.get(pk=pk)
-        except Profile.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk=None, format=None):
-        queryset = self.get_object(pk=pk)
-        serializer = ProfileLinkSerializer(queryset)
-        return Response(serializer.data)
-
-    def put(self, request, pk=None, format=None):
-        queryset = self.get_object(pk)
-        serializer = ProfileLinkSaveSerializer(queryset, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk=None, format=None):
-        queryset = self.get_object(pk)
-        queryset.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def patch(self, request, pk=None, format=None):
-        queryset = self.get_object(pk)
-        serializer = ProfileLinkSerializer(queryset, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ProfileLinkViewSetList(APIView):
-    queryset = ProfileLink.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
-    pagination_class = LimitOffsetPagination
-
-    def get(self, request, format=None):
-        queryset = ProfileLink.objects.all()
-        paginator = self.pagination_class()
-        result_page = paginator.paginate_queryset(queryset, request)
-        if result_page is not None:
-            serializer = ProfileLinkSerializer(result_page, many=True)
-            return paginator.get_paginated_response(serializer.data)
-        serializer = ProfileLinkSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = ProfileLinkSaveSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 class ArticleViewSetDetail(APIView):
     queryset = Article.objects.none()
     permission_classes = [IsAdminOrReadOnly]
@@ -919,3 +859,63 @@ def generate_pdf(data):
     pdf.save()
     buffer.seek(0)
     return buffer
+
+
+class GenericLinkViewSetDetail(APIView):
+    queryset = GenericLink.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_object(self, pk=None):
+        try:
+            return GenericLink.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk=None, format=None):
+        queryset = self.get_object(pk=pk)
+        serializer = GenericLinkBigSerializer(queryset)
+        return Response(serializer.data)
+
+    def put(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = GenericLinkBigSaveSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = GenericLinkBigSaveSerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GenericLinkViewSetList(APIView):
+    queryset = GenericLink.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
+    pagination_class = LimitOffsetPagination
+
+    def get(self, request, format=None):
+        queryset = GenericLink.objects.all()
+        paginator = self.pagination_class()
+        result_page = paginator.paginate_queryset(queryset, request)
+        if result_page is not None:
+            serializer = GenericLinkBigSerializer(result_page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        serializer = GenericLinkBigSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = GenericLinkBigSaveSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

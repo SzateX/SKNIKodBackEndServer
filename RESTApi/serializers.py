@@ -5,7 +5,7 @@ from rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from .models import Profile, ProfileLink, Article, Comment, Tag, \
     File, HardwareRental, Hardware, Project, \
-    Section, Gallery, RepoLink, Sponsor  # ArticleTag, ArticleAuthor
+    Sponsor, Section, GenericLink, Gallery  # ArticleTag, ArticleAuthor
 
 from sorl_thumbnail_serializer.fields import HyperlinkedSorlImageField
 
@@ -24,8 +24,15 @@ class RegisterWithFullNameSerializer(RegisterSerializer):
         }
 
 
+class GenericLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GenericLink
+        fields = ('id', 'link', 'link_type')
+
+
 class UserSerializer(serializers.ModelSerializer):
     is_admin_user = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'groups', 'profile', 'password',
@@ -51,9 +58,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProfileWithoutUserSerializer(serializers.ModelSerializer):
+    links = GenericLinkSerializer(many=True)
+
     class Meta:
         model = Profile
-        fields = ('id', 'description', 'profile_links', 'index_number')
+        fields = ('id', 'description', 'links', 'index_number')
 
 
 class ShortUserSerializer(serializers.ModelSerializer):
@@ -77,19 +86,13 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-class ProfileLinkSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProfileLink
-        fields = ('id', 'link', 'link_type', 'user')
-
-
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    profile_links = ProfileLinkSerializer(read_only=True, many=True)
+    links = GenericLinkSerializer(read_only=True, many=True)
 
     class Meta:
         model = Profile
-        fields = ('id', 'user', 'description', 'avatar', 'index_number', 'profile_links')
+        fields = ('id', 'user', 'description', 'avatar', 'index_number', 'links')
 
 
 class GallerySerializer(serializers.ModelSerializer):
@@ -105,12 +108,6 @@ class GallerySerializer(serializers.ModelSerializer):
         fields = ('id', 'image', 'thumbnail')
 
 
-class ProfileLinkSaveSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProfileLink
-        fields = ('id', 'link', 'user', 'link_type')
-
-
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
@@ -123,13 +120,14 @@ class ArticleSerializer(serializers.ModelSerializer):
     comments_number = serializers.SerializerMethodField()
     gallery = GallerySerializer(many=True)
     authors = ShortUserSerializer(many=True)
+    links = GenericLinkSerializer(many=True)
 
     class Meta:
         model = Article
         fields = (
             'id', 'alias', 'title', 'text', 'creation_date',
             'publication_date', 'creator', 'authors', 'tags', 'comments_number',
-            'gallery')
+            'gallery', 'links')
 
     def get_comments_number(self, obj):
         return obj.comments.count()
@@ -163,7 +161,6 @@ class CommentSaveSerializer(serializers.ModelSerializer):
 
 
 class ArticleSaveSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Article
         fields = (
@@ -196,7 +193,7 @@ class HardwareSerializer(serializers.ModelSerializer):
 class HardwareSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hardware
-        fields = ('id', 'name', 'description', 'serial_number')
+        fields = ('id', 'name', 'description', 'serial_number', 'status')
 
 
 class HardwareRentalSerializer(serializers.ModelSerializer):
@@ -228,38 +225,55 @@ class SectionSaveSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description', 'isVisible', 'icon', 'gallery')
 
 
-class RepoLinkSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RepoLink
-        fields = ('id', 'link', 'link_type', 'project')
-
-
 class ProjectSerializer(serializers.ModelSerializer):
     creator = ShortUserSerializer()
     section = SectionSerializer()
     authors = ShortUserSerializer(many=True)
-    repository_links = RepoLinkSerializer(many=True)
+    links = GenericLinkSerializer(many=True)
     gallery = GallerySerializer(many=True)
 
     class Meta:
         model = Project
-        fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
-                  'repository_links', 'creator', 'section', 'authors', 'gallery')
+        fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'creator', 'section', 'authors', 'gallery', 'links')
 
 
 class ProjectSaveSerializer(serializers.ModelSerializer):
-    repository_links = serializers.PrimaryKeyRelatedField(many=True, required=True, queryset=RepoLink.objects.all())
     authors = serializers.PrimaryKeyRelatedField(many=True, required=True, queryset=User.objects.all())
 
     class Meta:
         model = Project
-        fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
-                  'repository_links', 'creator', 'section', 'authors', 'gallery')
+        fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'creator', 'section', 'authors', 'gallery')
         extra_kwargs = {'gallery': {'required': False}}
 
 
 class SponsorSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Sponsor
         fields = ('id', 'name', 'image', 'url')
+
+
+class GenericLinkObjectRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        if isinstance(value, Article):
+            serializer = ArticleSerializer(value)
+        elif isinstance(value, Profile):
+            serializer = ProfileSerializer(value)
+        elif isinstance(value, Project):
+            serializer = ProjectSerializer(value)
+        else:
+            raise Exception("Unknown type of object")
+        return serializer.data
+
+
+class GenericLinkBigSerializer(serializers.ModelSerializer):
+    linked_object = GenericLinkObjectRelatedField(read_only=True)
+
+    class Meta:
+        model = GenericLink
+        fields = ('id', 'link', 'link_type', 'linked_object', 'content_type')
+
+
+class GenericLinkBigSaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GenericLink
+        fields = ('id', 'link', 'link_type', 'linked_object', 'content_type')
