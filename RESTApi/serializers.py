@@ -5,7 +5,7 @@ from rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from .models import Profile, ProfileLink, Article, Comment, Tag, \
     File, HardwareRental, Hardware, Project, \
-    Section, Gallery, RepoLink  # ArticleTag, ArticleAuthor
+    Section, Gallery, RepoLink, Sponsor  # ArticleTag, ArticleAuthor
 
 from sorl_thumbnail_serializer.fields import HyperlinkedSorlImageField
 
@@ -102,7 +102,7 @@ class GallerySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Gallery
-        fields = ('id', 'article', 'image', 'thumbnail')
+        fields = ('id', 'image', 'thumbnail')
 
 
 class ProfileLinkSaveSerializer(serializers.ModelSerializer):
@@ -115,6 +115,7 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name')
+
 
 class ArticleSerializer(serializers.ModelSerializer):
     creator = ShortUserSerializer()
@@ -132,6 +133,7 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     def get_comments_number(self, obj):
         return obj.comments.count()
+
 
 class CommentSerializer(serializers.ModelSerializer):
     user = ShortUserSerializer()
@@ -161,7 +163,6 @@ class CommentSaveSerializer(serializers.ModelSerializer):
 
 
 class ArticleSaveSerializer(serializers.ModelSerializer):
-    gallery = serializers.PrimaryKeyRelatedField(many=True, required=False, queryset=Gallery.objects.all())
 
     class Meta:
         model = Article
@@ -214,9 +215,17 @@ class HardwareRentalSaveSerializer(serializers.ModelSerializer):
 
 
 class SectionSerializer(serializers.ModelSerializer):
+    gallery = GallerySerializer(many=True)
+
     class Meta:
         model = Section
-        fields = ('id', 'name', 'description', 'isVisible', 'icon')
+        fields = ('id', 'name', 'description', 'isVisible', 'icon', 'gallery')
+
+
+class SectionSaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Section
+        fields = ('id', 'name', 'description', 'isVisible', 'icon', 'gallery')
 
 
 class RepoLinkSerializer(serializers.ModelSerializer):
@@ -230,6 +239,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     section = SectionSerializer()
     authors = ShortUserSerializer(many=True)
     repository_links = RepoLinkSerializer(many=True)
+    gallery = GallerySerializer(many=True)
 
     class Meta:
         model = Project
@@ -246,3 +256,10 @@ class ProjectSaveSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'text', 'creation_date', 'publication_date',
                   'repository_links', 'creator', 'section', 'authors', 'gallery')
         extra_kwargs = {'gallery': {'required': False}}
+
+
+class SponsorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Sponsor
+        fields = ('id', 'name', 'image', 'url')

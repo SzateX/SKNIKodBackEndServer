@@ -839,6 +839,60 @@ class GalleryViewSetList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class SponsorViewSetDetail(APIView):
+    queryset = Sponsor.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_object(self, pk):
+        try:
+            return Sponsor.objects.get(pk=pk)
+        except:
+            raise Http404
+
+    def get(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = SponsorSerializer(queryset)
+        return Response(serializer.data)
+
+    def put(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = SponsorSerializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request,  pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = SponsorSerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SponsorViewSetList(APIView):
+    queryset = Sponsor.objects.none()
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get(self, format=None):
+        queryset = Sponsor.objects.all()
+        serializer = SponsorSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = SponsorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 def generate_pdf(data):
     buffer = io.BytesIO()
     pdf = canvas.Canvas(buffer)
