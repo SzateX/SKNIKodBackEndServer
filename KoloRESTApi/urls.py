@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url, include
+from dynamic_preferences.api.viewsets import GlobalPreferencesViewSet
 from rest_auth.registration.views import SocialAccountListView, \
     SocialAccountDisconnectView
 from rest_framework import routers
@@ -32,12 +33,17 @@ from RESTApi import views
 
 router = routers.DefaultRouter()
 
+router.register(r'global', GlobalPreferencesViewSet, base_name='global')
+api_patterns = [
+    url(r'^preferences/', include(router.urls))
+]
+
 schema_view = get_swagger_view(title='SKNI KOD Website API')
 
 urlpatterns = [
     url(r'^$', IndexTemplateView.as_view()),
     url(r'^admin/', admin.site.urls),
-    url(r'^api/', include(router.urls)),
+    url(r'^api/', include(api_patterns)),
     url(r'^api-auth/',
         include('rest_framework.urls', namespace='rest_framework')),
     url(r'^rest-auth/', include('rest_auth.urls')),

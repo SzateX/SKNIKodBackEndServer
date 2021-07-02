@@ -28,9 +28,10 @@ class DefaultPaginationCount(IntegerPreference):
     required = False
 
 
-"""@global_preferences_registry.register
+@global_preferences_registry.register
 class DefaultPageColor(ChoicePreference):
     section = general
+    name = 'default_page_color'
     choices = [
         ('primary', 'primary'),
         ('secondary', 'secondary'),
@@ -39,4 +40,5 @@ class DefaultPageColor(ChoicePreference):
         ('warning', 'warning'),
         ('error', 'error'),
         ('info', 'info'),
-    ]"""
+    ]
+    default = 'primary'
