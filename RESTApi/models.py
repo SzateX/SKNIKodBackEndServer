@@ -241,3 +241,13 @@ class Sponsor(models.Model):
     name = models.CharField(max_length=60)
     url = models.URLField(null=True)
     logo = models.ImageField(upload_to='sponsor_logo/')
+
+
+class FooterLink(models.Model):
+    link = models.URLField()
+    title = models.CharField(max_length=128)
+    icon = models.CharField(max_length=64)
+    color = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.title

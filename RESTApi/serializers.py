@@ -5,7 +5,7 @@ from rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from .models import Profile, ProfileLink, Article, Comment, Tag, \
     File, HardwareRental, Hardware, Project, \
-    Sponsor, Section, GenericLink, Gallery  # ArticleTag, ArticleAuthor
+    Sponsor, Section, GenericLink, Gallery, FooterLink  # ArticleTag, ArticleAuthor
 
 from sorl_thumbnail_serializer.fields import HyperlinkedSorlImageField
 
@@ -277,3 +277,9 @@ class GenericLinkBigSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = GenericLink
         fields = ('id', 'link', 'link_type', 'linked_object', 'content_type')
+
+
+class FooterLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FooterLink
+        fields = ('id', 'link', 'title', 'icon', 'color')

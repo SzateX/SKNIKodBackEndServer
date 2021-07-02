@@ -84,7 +84,9 @@ urlpatterns = [
     url(r'^api/profiles/(?P<pk>\d+)/$', views.ProfileViewSetDetail.as_view(), name='profiles_detail'),
     url(r'^api/sponsors/$', views.SponsorViewSetList.as_view(), name='sponsor_list'),
     url(r'^api/sponsors/(?P<pk>\d)/$', views.SponsorViewSetDetail.as_view(), name='sponsor_detail'),
-    url(r'^api/generic_links/$', views.GenericLinkViewSetList.as_view(), name='profile_link_detail'),
-    url(r'^api/generic_links/(?P<pk>\d+)/$', views.GenericLinkViewSetDetail.as_view(), name='profile_link_detail'),
+    url(r'^api/generic_links/$', views.GenericLinkViewSetList.as_view(), name='generic_link_detail'),
+    url(r'^api/generic_links/(?P<pk>\d+)/$', views.GenericLinkViewSetDetail.as_view(), name='generic_link_list'),
+    url(r'^api/footer_links/$', views.FooterLinkListView.as_view(), name='footer_link_detail'),
+    url(r'^api/footer_links/(?P<pk>\d+)/$', views.FooterLinkDetailView.as_view(), name='footer_link_list'),
     url(r'^docs$', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
