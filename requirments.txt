@@ -40,4 +40,4 @@ sorl-thumbnail
 sorl-thumbnail-serializer-field
 
 reportlab~=3.5.63
-django-dynamic-preferences=1.10.1
+django-dynamic-preferences==1.10.1
