@@ -115,7 +115,7 @@ class Article(models.Model):
     authors = models.ManyToManyField(User, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
-    gallery = models.ManyToManyField('Gallery')
+    gallery = models.ManyToManyField('Gallery', blank=True)
     links = GenericRelation(GenericLink)
 
     def __str__(self):
@@ -193,7 +193,7 @@ class Project(models.Model):
                                 related_name='projects', null=True)
     authors = models.ManyToManyField(User, blank=True)
 
-    gallery = models.ManyToManyField('Gallery')
+    gallery = models.ManyToManyField('Gallery', blank=True)
     links = GenericRelation(GenericLink)
 
     def __str__(self):
@@ -231,7 +231,7 @@ class Section(models.Model):
     description = models.TextField()
     isVisible = models.BooleanField()
     icon = models.TextField(null=True, blank=True)
-    gallery = models.ManyToManyField('Gallery')
+    gallery = models.ManyToManyField('Gallery', blank=True)
 
     def __str__(self):
         return self.name
