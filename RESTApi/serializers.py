@@ -157,7 +157,7 @@ class CommentSaveSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if ('article_id' in data or 'project_id' in data) and not ('article_id' in data and 'project_id' in data):
             raise serializers.ValidationError("U have to provide article id or project id")
-        super(CommentSaveSerializer, self).validate(data)
+        return super(CommentSaveSerializer, self).validate(data)
 
 
 class ArticleSaveSerializer(serializers.ModelSerializer):
