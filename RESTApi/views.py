@@ -685,7 +685,7 @@ class SectionViewSetDetail(APIView):
 
     def put(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
-        serializer = SectionSerializer(queryset, data=request.data)
+        serializer = SectionSaveSerializer(queryset, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -698,7 +698,7 @@ class SectionViewSetDetail(APIView):
 
     def patch(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
-        serializer = SectionSerializer(queryset, data=request.data, partial=True)
+        serializer = SectionSaveSerializer(queryset, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
