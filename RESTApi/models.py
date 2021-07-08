@@ -47,7 +47,7 @@ class ProfileLink(models.Model):
     link = models.URLField()
     user = models.ForeignKey('Profile', on_delete=models.CASCADE,
                              related_name='profile_links')
-    link_type = models.CharField(choices=LINK_TYPES, max_length=100)
+    link_type = models.CharField(choices=LINK_TYPES, max_length=100, default='OTHER')
 
     def __str__(self):
         return "%s: %s" % (self.user.user.username, self.link)
@@ -159,8 +159,8 @@ class RepoLink(models.Model):
 
     link = models.URLField()
     project = models.ForeignKey('Project', on_delete=models.CASCADE,
-                             related_name='repository_links')
-    link_type = models.CharField(choices=LINK_TYPES, max_length=100)
+                             related_name='repository_links', null=True)
+    link_type = models.CharField(choices=LINK_TYPES, max_length=100, default='OTHER')
 
     def __str__(self):
         return "%s: %s" % (self.project, self.link)
