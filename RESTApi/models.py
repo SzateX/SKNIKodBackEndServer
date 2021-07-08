@@ -110,9 +110,9 @@ class Article(models.Model):
     text = models.TextField()
     creation_date = models.DateTimeField()
     publication_date = models.DateTimeField(null=True)
-    creator = models.ForeignKey(User, on_delete=models.CASCADE,
+    creator = models.ForeignKey('Profile', on_delete=models.CASCADE,
                                 related_name='articles')
-    authors = models.ManyToManyField(User, blank=True)
+    authors = models.ManyToManyField('Profile', blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
     gallery = models.ManyToManyField('Gallery', blank=True)
@@ -130,7 +130,7 @@ class Comment(models.Model):
                                 related_name='comments', null=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE,
                                 related_name='comments', null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE,
                              related_name='comments')
 
     def save(self, *args, **kwargs):
@@ -157,7 +157,7 @@ class File(models.Model):
 
 
 class HardwareRental(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
+    user = models.ForeignKey('Profile', on_delete=models.CASCADE,
                              related_name='rentals')
     hardware = models.ForeignKey('Hardware', on_delete=models.CASCADE,
                                  related_name='rentals')
@@ -187,11 +187,11 @@ class Project(models.Model):
     text = models.TextField()
     creation_date = models.DateTimeField()
     publication_date = models.DateTimeField(null=True)
-    creator = models.ForeignKey(User, on_delete=models.CASCADE,
+    creator = models.ForeignKey('Profile', on_delete=models.CASCADE,
                                 related_name='projects')
     section = models.ForeignKey('Section', on_delete=models.CASCADE,
                                 related_name='projects', null=True)
-    authors = models.ManyToManyField(User, blank=True)
+    authors = models.ManyToManyField('Profile', blank=True)
 
     gallery = models.ManyToManyField('Gallery', blank=True)
     links = GenericRelation(GenericLink)

@@ -74,10 +74,10 @@ class ProfileWithoutUserSerializer(serializers.ModelSerializer):
 
 class ShortUserSerializer(serializers.ModelSerializer):
     profile = ProfileWithoutUserSerializer()
-
+   
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'profile')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name')
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
@@ -102,6 +102,14 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'description', 'avatar', 'index_number', 'links')
 
 
+class ProfileShortSerializer(serializers.ModelSerializer):
+    user = ShortUserSerializer(read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ('id', 'user', 'description', 'profile_links')
+
+
 class GallerySerializer(serializers.ModelSerializer):
     thumbnail = HyperlinkedSorlImageField(
         '512x512',
@@ -121,8 +129,24 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    user = ProfileShortSerializer()
+
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'creation_date', 'article_id', 'user')
+        depth = 2
+
+
+class CommentSaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'creation_date', 'article_id', 'user')
+        depth = 2
+
+
 class ArticleSerializer(serializers.ModelSerializer):
-    creator = ShortUserSerializer()
+    creator = ProfileShortSerializer()
     tags = TagSerializer(many=True)
     comments_number = serializers.SerializerMethodField()
     gallery = GallerySerializer(many=True)
@@ -204,7 +228,7 @@ class HardwareSaveSerializer(serializers.ModelSerializer):
 
 
 class HardwareRentalSerializer(serializers.ModelSerializer):
-    user = ShortUserSerializer()
+    user = ProfileShortSerializer()
     hardware = HardwareSerializer()
 
     class Meta:
@@ -233,7 +257,7 @@ class SectionSaveSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    creator = ShortUserSerializer()
+    creator = ProfileShortSerializer()
     section = SectionSerializer()
     authors = ShortUserSerializer(many=True)
     links = GenericLinkSerializer(many=True)
