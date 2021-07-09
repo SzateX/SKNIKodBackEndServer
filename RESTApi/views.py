@@ -18,10 +18,11 @@ from rest_framework import viewsets, status
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import *
 
 from .models import *
+from RESTApi.custom_permissions import *
 from RESTApi.serializers import *
-
 from rest_framework import permissions
 
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
@@ -45,21 +46,9 @@ class IndexTemplateView(TemplateView):
     template_name = 'index.html'
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-
-    def get_serializer_class(self):
-        serializer_class = self.serializer_class
-
-        if self.request.method == 'PUT':
-            serializer_class = UserUpdateSerializer
-
-        return serializer_class
-
-
 class UserViewSetDetail(APIView):
     queryset = User.objects.none()
+    permission_classes = [IsOwnerOrAdminForUserViewOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -69,11 +58,13 @@ class UserViewSetDetail(APIView):
 
     def get(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
+        self.check_object_permissions(self.request, queryset)
         serializer = UserSerializer(queryset)
         return Response(serializer.data)
 
     def put(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
+        self.check_object_permissions(self.request, queryset)
         serializer = UserUpdateSerializer(queryset, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -82,11 +73,13 @@ class UserViewSetDetail(APIView):
 
     def delete(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
+        self.check_object_permissions(self.request, queryset)
         queryset.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def patch(self, request,  pk=None, format=None):
         queryset = self.get_object(pk)
+        self.check_object_permissions(self.request, queryset)
         serializer = UserUpdateSerializer(queryset, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -97,12 +90,12 @@ class UserViewSetDetail(APIView):
 class UserViewSetList(APIView):
     queryset = User.objects.none()
     permission_classes = [IsAdminOrReadOnly]
-    
+
     def get(self, format=None):
         queryset = User.objects.all().order_by('-date_joined')
         serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request, format=None):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -111,17 +104,9 @@ class UserViewSetList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-
-
 class GroupViewSetDetail(APIView):
-    queryset = User.objects.none()
+    queryset = Group.objects.none()
+    permission_classes = [IsAdminUser]
 
     def get_object(self, pk=None):
         try:
@@ -256,9 +241,10 @@ class ArticleViewSetDetail(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PUT'):
-            return ProfileLinkSaveSerializer
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def patch(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
@@ -274,17 +260,15 @@ class ArticleViewSetList(APIView):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
     pagination_class = LimitOffsetPagination
 
-    def get_queryset(self):
+    def get_objects(self):
         tag_id = self.request.query_params.get('tag', None)
         tag_name = self.request.query_params.get('tagname', None)
         author_id = self.request.query_params.get('author', None)
         author_name = self.request.query_params.get('authorname', None)
         if tag_id is not None:
-            return Article.objects.filter(tags=tag_id).order_by(
-                '-publication_date')
+            return Article.objects.filter(tags=tag_id).order_by('-publication_date')
         if tag_name is not None:
-            return Article.objects.filter(tags__name=tag_name).order_by(
-                '-publication_date')
+            return Article.objects.filter(tags__name=tag_name).order_by('-publication_date')
         if author_id is not None:
             return Article.objects.filter(authors=author_id).order_by('-publication_date')
         if author_name is not None:
@@ -349,14 +333,12 @@ class CommentViewSetDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CommentViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = Comment.objects.all().order_by('-creation_date')
-    serializer_class = CommentSerializer
+class CommentViewSetList(APIView):
+    queryset = Comment.objects.none()
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get_queryset(self):
+    def get_objects(self):
         article_id = self.request.query_params.get('article', None)
-
         if article_id is not None:
             return Comment.objects.filter(article=article_id).order_by('-creation_date')
         else: return Comment.objects.all().order_by('-creation_date')
@@ -432,6 +414,12 @@ class FileViewSetDetail(APIView):
     queryset = File.objects.none()
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
+    def get_object(self, pk):
+        try:
+            return File.objects.get(pk=pk)
+        except File.DoesNotExist:
+            raise Http404
+
     def get(self, request, pk=None, format=None):
         queryset = self.get_object(pk)
         serializer = FileSerializer(queryset)
@@ -445,11 +433,18 @@ class FileViewSetDetail(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-class FileSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
+    def patch(self, request,  pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = FileSaveSerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class FileViewSetList(APIView):
@@ -540,7 +535,7 @@ class HardwareRentalViewSetList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-      
+
 class HardwareSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissions,)
     queryset = Hardware.objects.all()
@@ -750,18 +745,25 @@ class GalleryViewSetDetail(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, pk=None, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-class SectionSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    queryset = Section.objects.all()
-    serializer_class = SectionSerializer
+    def patch(self, request,  pk=None, format=None):
+        queryset = self.get_object(pk)
+        serializer = GallerySerializer(queryset, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GalleryViewSetList(APIView):
     queryset = Gallery.objects.none()
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
-    def get_queryset(self):
+    def get_objects(self):
         article_id = self.request.query_params.get('article', None)
         if article_id is None:
             return Gallery.objects.all()

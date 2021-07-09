@@ -32,17 +32,6 @@ from rest_framework_swagger.views import get_swagger_view
 from RESTApi import views
 
 router = routers.DefaultRouter()
-router.register(r'profiles', views.ProfileViewSet)
-router.register(r'profile_links', views.ProfileViewSet)
-router.register(r'articles', views.ArticleViewSet)
-router.register(r'comments', views.CommentViewSet)
-router.register(r'tags', views.TagViewSet)
-router.register(r'file_set', views.FileSet)
-router.register(r'hardware_rentals', views.HardwareRentalSet)
-router.register(r'hardwares', views.HardwareSet)
-router.register(r'project', views.ProjectSet)
-router.register(r'section', views.SectionSet)
-router.register(r'gallery', views.GallerySet)
 
 router.register(r'global', GlobalPreferencesViewSet, base_name='global')
 api_patterns = [
