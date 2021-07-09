@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_swagger',
     'sorl.thumbnail',
-    'sorl_thumbnail_serializer'
+    'sorl_thumbnail_serializer',
+    'dynamic_preferences',
+    'dynamic_preferences.users.apps.UserPreferencesConfig',
 ]
 
 MIDDLEWARE = [
@@ -167,7 +169,7 @@ SWAGGER_SETTINGS = {
 LOGIN_URL = 'rest_framework:login'
 LOGOUT_URL = 'rest_framework:logout'
 
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "mediafolder")
 

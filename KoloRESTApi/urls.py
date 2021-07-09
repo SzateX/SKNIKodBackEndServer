@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url, include
+from dynamic_preferences.api.viewsets import GlobalPreferencesViewSet
 from rest_auth.registration.views import SocialAccountListView, \
     SocialAccountDisconnectView
 from rest_framework import routers
@@ -31,24 +32,18 @@ from rest_framework_swagger.views import get_swagger_view
 from RESTApi import views
 
 router = routers.DefaultRouter()
-router.register(r'profiles', views.ProfileViewSet)
-router.register(r'profile_links', views.ProfileViewSet)
-router.register(r'articles', views.ArticleViewSet)
-router.register(r'comments', views.CommentViewSet)
-router.register(r'tags', views.TagViewSet)
-router.register(r'file_set', views.FileSet)
-router.register(r'hardware_rentals', views.HardwareRentalSet)
-router.register(r'hardwares', views.HardwareSet)
-router.register(r'project', views.ProjectSet)
-router.register(r'section', views.SectionSet)
-router.register(r'gallery', views.GallerySet)
+
+router.register(r'global', GlobalPreferencesViewSet, base_name='global')
+api_patterns = [
+    url(r'^preferences/', include(router.urls))
+]
 
 schema_view = get_swagger_view(title='SKNI KOD Website API')
 
 urlpatterns = [
     url(r'^$', IndexTemplateView.as_view()),
     url(r'^admin/', admin.site.urls),
-    url(r'^api/', include(router.urls)),
+    url(r'^api/', include(api_patterns)),
     url(r'^api-auth/',
         include('rest_framework.urls', namespace='rest_framework')),
     url(r'^rest-auth/', include('rest_auth.urls')),
@@ -69,9 +64,35 @@ urlpatterns = [
     url(r'^obtain-token/', TokenObtainPairView.as_view(),
         name='token_obtain_pair'),
     url(r'^verify-token/', TokenVerifyView.as_view(), name='token_verify'),
-    url(r'^users/$', views.UserViewSetList.as_view(), name='user_list'),
-    url(r'^users/(?P<pk>\d+)/$', views.UserViewSetDetail.as_view(), name='user_detail'),
-    url(r'^groups/$', views.GroupViewSetList.as_view(), name='group_list'),
-    url(r'^groups/(?P<pk>\d+)/$', views.GroupViewSetDetail.as_view(), name='group_detail'),
+    url(r'^api/users/$', views.UserViewSetList.as_view(), name='user_list'),
+    url(r'^api/users/(?P<pk>\d+)/$', views.UserViewSetDetail.as_view(), name='user_detail'),
+    url(r'^api/groups/$', views.GroupViewSetList.as_view(), name='group_list'),
+    url(r'^api/groups/(?P<pk>\d+)/$', views.GroupViewSetDetail.as_view(), name='group_detail'),
+    url(r'^api/articles/$', views.ArticleViewSetList.as_view(), name='article_list'),
+    url(r'^api/articles/(?P<pk>\d+)/$', views.ArticleViewSetDetail.as_view(), name='article_list'),
+    url(r'^api/comments/$', views.CommentViewSetList.as_view(), name='comment_list'),
+    url(r'^api/comments/(?P<pk>\d+)/$', views.CommentViewSetDetail.as_view(), name='comment_detail'),
+    url(r'^api/tags/$', views.TagViewSetList.as_view(), name='tag_list'),
+    url(r'^api/tags/(?P<pk>\d+)/$', views.TagViewSetDetail.as_view(), name='tag_detail'),
+    url(r'^api/files/$', views.FileViewSetList.as_view(), name='file_list'),
+    url(r'^api/files/(?P<pk>\d+)/$', views.FileViewSetDetail.as_view(), name='file_detail'),
+    url(r'^api/gallery/$', views.GalleryViewSetList.as_view(), name='gallery_detail'),
+    url(r'^api/gallery/(?P<pk>\d+)/$', views.GalleryViewSetDetail.as_view(), name='gallery_detail'),
+    url(r'^api/hardware_rentals/$', views.HardwareRentalViewSetList.as_view(), name='hardware_rental_list'),
+    url(r'^api/hardware_rentals/(?P<pk>\d+)/$', views.HardwareRentalViewSetDetail.as_view(), name='hardware_rental_detail'),
+    url(r'^api/hardwares/$', views.HardwareViewSetList.as_view(), name='hardware_list'),
+    url(r'^api/hardwares/(?P<pk>\d+)/$', views.HardwareViewSetDetail.as_view(), name='hardware_detail'),
+    url(r'^api/section/$', views.SectionViewSetList.as_view(), name='section_list'),
+    url(r'^api/section/(?P<pk>\d+)/$', views.SectionViewSetDetail.as_view(), name='section_detail'), 
+    url(r'^api/projects/$', views.ProjectViewSetList.as_view(), name='project_detail'),
+    url(r'^api/projects/(?P<pk>\d+)/$', views.ProjectViewSetDetail.as_view(), name='project_detail'),
+    url(r'^api/profiles/$', views.ProfileViewSetList.as_view(), name='profiles_detail'),
+    url(r'^api/profiles/(?P<pk>\d+)/$', views.ProfileViewSetDetail.as_view(), name='profiles_detail'),
+    url(r'^api/sponsors/$', views.SponsorViewSetList.as_view(), name='sponsor_list'),
+    url(r'^api/sponsors/(?P<pk>\d)/$', views.SponsorViewSetDetail.as_view(), name='sponsor_detail'),
+    url(r'^api/generic_links/$', views.GenericLinkViewSetList.as_view(), name='generic_link_detail'),
+    url(r'^api/generic_links/(?P<pk>\d+)/$', views.GenericLinkViewSetDetail.as_view(), name='generic_link_list'),
+    url(r'^api/footer_links/$', views.FooterLinkListView.as_view(), name='footer_link_detail'),
+    url(r'^api/footer_links/(?P<pk>\d+)/$', views.FooterLinkDetailView.as_view(), name='footer_link_list'),
     url(r'^docs$', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

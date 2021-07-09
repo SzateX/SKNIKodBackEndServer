@@ -38,3 +38,6 @@ urllib3==1.24.1
 pillow
 sorl-thumbnail
 sorl-thumbnail-serializer-field
+
+reportlab~=3.5.63
+django-dynamic-preferences==1.10.1
