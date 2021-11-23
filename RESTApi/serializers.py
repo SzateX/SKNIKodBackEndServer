@@ -112,7 +112,7 @@ class GallerySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Gallery
-        fields = ('id', 'image', 'thumbnail')
+        fields = ('id', 'image', 'thumbnail', 'thumbnail_visibility', 'text_visibility', 'gallery_visibility')
 
 
 class TagSerializer(serializers.ModelSerializer):
