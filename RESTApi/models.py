@@ -93,8 +93,12 @@ class Tag(models.Model):
 
 
 class Gallery(models.Model):
+
     gallery_name = models.CharField(max_length=100)
     image = models.ImageField(upload_to="gallery/")
+    thumbnail_visibility = models.BooleanField(default=False)
+    text_visibility = models.BooleanField(default=False)
+    gallery_visibility = models.BooleanField(default=False)
 
     def __str__(self):
         return "%s - %s" % (self.gallery_name, self.image.name)
