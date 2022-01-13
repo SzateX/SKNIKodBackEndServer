@@ -160,7 +160,7 @@ class GroupViewSetList(APIView):
 
 class ProfileViewSetDetail(APIView):
     queryset = Profile.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsOwnerOrAdminForUserViewOrReadOnly]
 
     def get_object(self, pk=None):
         try:
@@ -197,7 +197,7 @@ class ProfileViewSetDetail(APIView):
 
 class ProfileViewSetList(APIView):
     queryset = Profile.objects.none()
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsOwnerOrAdminForUserViewOrReadOnly]
     pagination_class = LimitOffsetPagination
 
     def get(self, request, format=None):
