@@ -651,7 +651,7 @@ class ProjectViewSetList(APIView):
     pagination_class = LimitOffsetPagination
 
     def get(self, request, format=None):
-        queryset = Project.objects.all()
+        queryset = Project.objects.all().order_by('-id')
         paginator = self.pagination_class()
         result_page = paginator.paginate_queryset(queryset, request)
         if result_page is not None:
