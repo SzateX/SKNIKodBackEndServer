@@ -85,7 +85,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'KoloRESTApi.wsgi.application'
-
+THUMBNAIL_PRESERVE_FORMAT = "png"
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
