@@ -112,6 +112,7 @@ class Article(models.Model):
     title = models.CharField(max_length=100)
     alias = models.CharField(max_length=100)
     text = models.TextField()
+    group = models.CharField(max_length=10, choices=(('News', 'News'), ('Article', 'Article')))
     creation_date = models.DateTimeField()
     publication_date = models.DateTimeField(null=True)
     creator = models.ForeignKey(User, on_delete=models.CASCADE,
