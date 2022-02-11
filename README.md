@@ -17,5 +17,5 @@ python3 manage.py migrate RESTApi
 python3 manage.py runserver
 ```
 ```
-python3 manage.py createsuperuser lub python manage.py createsuperuser 
+python3 manage.py createsuperuser
 ```
