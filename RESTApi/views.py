@@ -265,6 +265,7 @@ class ArticleViewSetList(APIView):
         tag_name = self.request.query_params.get('tagname', None)
         author_id = self.request.query_params.get('author', None)
         author_name = self.request.query_params.get('authorname', None)
+        group = self.request.query_params.get('group', None)
         if tag_id is not None:
             return Article.objects.filter(tags=tag_id).order_by('-publication_date')
         if tag_name is not None:
@@ -273,6 +274,8 @@ class ArticleViewSetList(APIView):
             return Article.objects.filter(authors=author_id).order_by('-publication_date')
         if author_name is not None:
             return Article.objects.filter(authors__user__username=author_name).order_by('-publication_date')
+        if group is not None:
+            return Article.objects.filter(group=group).order_by('-publication_date')
         return Article.objects.all().order_by('-publication_date')
 
     def get(self, request, format=None):
