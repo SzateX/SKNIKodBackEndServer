@@ -171,7 +171,7 @@ class ArticleSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = (
-            'id', 'alias', 'title', 'text', 'creation_date', 'publication_date',
+            'id', 'alias', 'title', 'text', 'group', 'creation_date', 'publication_date',
             'creator', 'tags', 'authors', 'gallery')
 
 
