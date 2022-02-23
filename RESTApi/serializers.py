@@ -256,7 +256,7 @@ class ProjectSaveSerializer(serializers.ModelSerializer):
 class SponsorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sponsor
-        fields = ('id', 'name', 'image', 'url')
+        fields = ('id', 'name', 'logo', 'url')
 
 
 class GenericLinkObjectRelatedField(serializers.RelatedField):
