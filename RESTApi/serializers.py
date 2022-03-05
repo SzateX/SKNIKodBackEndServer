@@ -112,7 +112,7 @@ class GallerySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Gallery
-        fields = ('id', 'image', 'thumbnail')
+        fields = ('id', 'image', 'thumbnail', 'thumbnail_visibility', 'text_visibility', 'gallery_visibility')
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -132,7 +132,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = (
-            'id', 'alias', 'title', 'text', 'creation_date',
+            'id', 'alias', 'title', 'text', 'creation_date', 'group',
             'publication_date', 'creator', 'authors', 'tags', 'comments_number',
             'gallery', 'links')
 
@@ -171,7 +171,7 @@ class ArticleSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = (
-            'id', 'alias', 'title', 'text', 'creation_date', 'publication_date',
+            'id', 'alias', 'title', 'text', 'group', 'creation_date', 'publication_date',
             'creator', 'tags', 'authors', 'gallery')
 
 
@@ -256,7 +256,7 @@ class ProjectSaveSerializer(serializers.ModelSerializer):
 class SponsorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sponsor
-        fields = ('id', 'name', 'image', 'url')
+        fields = ('id', 'name', 'logo', 'url')
 
 
 class GenericLinkObjectRelatedField(serializers.RelatedField):
