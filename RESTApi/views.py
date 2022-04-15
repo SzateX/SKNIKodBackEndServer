@@ -27,7 +27,7 @@ from rest_framework import permissions
 
 from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from rest_auth.registration.views import SocialLoginView, SocialConnectView
+from dj_rest_auth.registration.views import SocialLoginView, SocialConnectView
 
 
 class GitHubLogin(SocialLoginView):
