@@ -106,9 +106,9 @@ django/
 
 # Visual Studio Code settings
 .vscode/
-RESTApi/migrations/*
-REstApi/migrations/__init__.py
-RESTApi/migrations/0001_initial.py
+rest_api/migrations/*
+rest_api/migrations/__init__.py
+rest_api/migrations/0001_initial.py
 /mediafolder/
 
 # Visual Studio settings
