@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'dynamic_preferences',
     'dynamic_preferences.users.apps.UserPreferencesConfig',
     'user',
-    'links',
     'rest_api',
 ]
 

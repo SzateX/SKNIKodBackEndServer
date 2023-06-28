@@ -4,7 +4,6 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-from links.models import GenericLink
 from user.models import Profile
 
 
@@ -45,7 +44,6 @@ class Article(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
 
     gallery = models.ManyToManyField('Gallery', blank=True)
-    links = GenericRelation(GenericLink)
 
     def __str__(self):
         return self.title
@@ -123,36 +121,9 @@ class Project(models.Model):
     authors = models.ManyToManyField(User, blank=True)
 
     gallery = models.ManyToManyField('Gallery', blank=True)
-    links = GenericRelation(GenericLink)
 
     def __str__(self):
         return self.title
-
-
-class RepoLink(models.Model):
-    # Admin Owner
-    GITHUB = 'GITHUB'
-    GITLAB = 'GITLAB'
-    BITBUCKET = 'BITBUCKET'
-    BLOG = 'BLOG'
-    PORTFOLIO = 'PORTFOLIO'
-    OTHER = 'OTHER'
-    LINK_TYPES = [
-        (GITHUB, 'GITHUB'),
-        (GITLAB, 'GITLAB'),
-        (BITBUCKET, 'BITBUCKET'),
-        (BLOG, 'BLOG'),
-        (PORTFOLIO, 'PORTFOLIO'),
-        (OTHER, 'OTHER')
-    ]
-
-    link = models.URLField()
-    project = models.ForeignKey('Project', on_delete=models.CASCADE,
-                             related_name='repository_links')
-    link_type = models.CharField(choices=LINK_TYPES, max_length=100)
-
-    def __str__(self):
-        return "%s: %s" % (self.project, self.link)
 
 
 class Section(models.Model):

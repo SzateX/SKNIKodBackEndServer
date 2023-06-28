@@ -9,7 +9,7 @@ from dynamic_preferences.api.viewsets import GlobalPreferencesViewSet
 from rest_api.views import ArticleViewSetList, ArticleViewSetDetail, CommentViewSetList, CommentViewSetDetail, \
     TagViewSetList, TagViewSetDetail, FileViewSetList, FileViewSetDetail, GalleryViewSetList, GalleryViewSetDetail, \
     HardwareViewSetList, HardwareViewSetDetail, SectionViewSetList, SectionViewSetDetail, ProjectViewSetList, \
-    ProjectViewSetDetail, SponsorViewSetList, SponsorViewSetDetail, GenericLinkViewSetList, GenericLinkViewSetDetail, \
+    ProjectViewSetDetail, SponsorViewSetList, SponsorViewSetDetail, \
     FooterLinkListView, FooterLinkDetailView
 
 from user.views import ProfileViewSetDetail, ProfileViewSetList
@@ -48,8 +48,6 @@ urlpatterns = [
     re_path(r'^api/profiles/(?P<pk>\d+)/$', ProfileViewSetDetail.as_view(), name='profiles_detail'),
     re_path(r'^api/sponsors/$', SponsorViewSetList.as_view(), name='sponsor_list'),
     re_path(r'^api/sponsors/(?P<pk>\d+)/$', SponsorViewSetDetail.as_view(), name='sponsor_detail'),
-    re_path(r'^api/generic_links/$', GenericLinkViewSetList.as_view(), name='generic_link_detail'),
-    re_path(r'^api/generic_links/(?P<pk>\d+)/$', GenericLinkViewSetDetail.as_view(), name='generic_link_list'),
     re_path(r'^api/footer_links/$', FooterLinkListView.as_view(), name='footer_link_detail'),
     re_path(r'^api/footer_links/(?P<pk>\d+)/$', FooterLinkDetailView.as_view(), name='footer_link_list'),
     re_path(r'^docs$', schema_view),
