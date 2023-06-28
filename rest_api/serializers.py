@@ -1,8 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from links.models import GenericLink
-from links.serializers import GenericLinkSerializer
 from user.models import Profile
 from user.serializers import ShortUserSerializer, ProfileSerializer
 from .models import Article, Comment, Tag, \
@@ -37,14 +35,13 @@ class ArticleSerializer(serializers.ModelSerializer):
     comments_number = serializers.SerializerMethodField()
     gallery = GallerySerializer(many=True)
     authors = ShortUserSerializer(many=True)
-    links = GenericLinkSerializer(many=True)
 
     class Meta:
         model = Article
         fields = (
             'id', 'alias', 'title', 'text', 'creation_date', 'group',
             'publication_date', 'creator', 'authors', 'tags', 'comments_number',
-            'gallery', 'links')
+            'gallery')
 
     def get_comments_number(self, obj):
         return obj.comments.count()
@@ -146,12 +143,11 @@ class ProjectSerializer(serializers.ModelSerializer):
     creator = ShortUserSerializer()
     section = SectionSerializer()
     authors = ShortUserSerializer(many=True)
-    links = GenericLinkSerializer(many=True)
     gallery = GallerySerializer(many=True)
 
     class Meta:
         model = Project
-        fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'creator', 'section', 'authors', 'gallery', 'links')
+        fields = ('id', 'title', 'text', 'creation_date', 'publication_date', 'creator', 'section', 'authors', 'gallery')
 
 
 class ProjectSaveSerializer(serializers.ModelSerializer):
@@ -167,33 +163,6 @@ class SponsorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sponsor
         fields = ('id', 'name', 'logo', 'url')
-
-
-class GenericLinkObjectRelatedField(serializers.RelatedField):
-    def to_representation(self, value):
-        if isinstance(value, Article):
-            serializer = ArticleSerializer(value)
-        elif isinstance(value, Profile):
-            serializer = ProfileSerializer(value)
-        elif isinstance(value, Project):
-            serializer = ProjectSerializer(value)
-        else:
-            raise Exception("Unknown type of object")
-        return serializer.data
-
-
-class GenericLinkBigSerializer(serializers.ModelSerializer):
-    linked_object = GenericLinkObjectRelatedField(read_only=True)
-
-    class Meta:
-        model = GenericLink
-        fields = ('id', 'link', 'link_type', 'linked_object', 'content_type')
-
-
-class GenericLinkBigSaveSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = GenericLink
-        fields = ('id', 'link', 'link_type', 'linked_object', 'content_type')
 
 
 class FooterLinkSerializer(serializers.ModelSerializer):

@@ -8,12 +8,11 @@ from rest_framework.views import APIView
 from rest_framework import permissions
 
 from rest_api.models import Article, Comment, Tag, File, HardwareRental, Hardware, Project, Section, Gallery, Sponsor, \
-    GenericLink, FooterLink
+    FooterLink
 from rest_api.serializers import ArticleSerializer, ArticleSaveSerializer, CommentSerializer, CommentSaveSerializer, \
     TagSerializer, FileSerializer, FileSaveSerializer, HardwareRentalSerializer, HardwareRentalSaveSerializer, \
     HardwareSerializer, HardwareSaveSerializer, ProjectSerializer, ProjectSaveSerializer, SectionSaveSerializer, \
-    SectionSerializer, GallerySerializer, SponsorSerializer, GenericLinkBigSaveSerializer, GenericLinkBigSerializer, \
-    FooterLinkSerializer
+    SectionSerializer, GallerySerializer, SponsorSerializer, FooterLinkSerializer
 from user.models import Profile
 from utils.custom_permissions import IsOwnerOrAdminForCommentViewOrReadOnly
 
@@ -609,66 +608,6 @@ class SponsorViewSetList(APIView):
 
     def post(self, request, format=None):
         serializer = SponsorSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class GenericLinkViewSetDetail(APIView):
-    queryset = GenericLink.objects.none()
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-
-    def get_object(self, pk=None):
-        try:
-            return GenericLink.objects.get(pk=pk)
-        except Profile.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk=None, format=None):
-        queryset = self.get_object(pk=pk)
-        serializer = GenericLinkBigSerializer(queryset)
-        return Response(serializer.data)
-
-    def put(self, request, pk=None, format=None):
-        queryset = self.get_object(pk)
-        serializer = GenericLinkBigSaveSerializer(queryset, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk=None, format=None):
-        queryset = self.get_object(pk)
-        queryset.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def patch(self, request, pk=None, format=None):
-        queryset = self.get_object(pk)
-        serializer = GenericLinkBigSaveSerializer(queryset, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class GenericLinkViewSetList(APIView):
-    queryset = GenericLink.objects.none()
-    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    pagination_class = LimitOffsetPagination
-
-    def get(self, request, format=None):
-        queryset = GenericLink.objects.all()
-        paginator = self.pagination_class()
-        result_page = paginator.paginate_queryset(queryset, request)
-        if result_page is not None:
-            serializer = GenericLinkBigSerializer(result_page, many=True)
-            return paginator.get_paginated_response(serializer.data)
-        serializer = GenericLinkBigSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = GenericLinkBigSaveSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

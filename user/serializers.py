@@ -2,7 +2,6 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
-from links.serializers import GenericLinkSerializer
 from user.models import Profile
 
 
@@ -69,19 +68,17 @@ class GroupSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    links = GenericLinkSerializer(read_only=True, many=True)
 
     class Meta:
         model = Profile
-        fields = ('id', 'user', 'description', 'avatar', 'index_number', 'links')
+        fields = ('id', 'user', 'description', 'avatar', 'index_number')
 
 
 class ProfileWithoutUserSerializer(serializers.ModelSerializer):
-    links = GenericLinkSerializer(many=True)
 
     class Meta:
         model = Profile
-        fields = ('id', 'description', 'links', 'index_number')
+        fields = ('id', 'description', 'index_number')
 
 
 class ShortUserSerializer(serializers.ModelSerializer):
